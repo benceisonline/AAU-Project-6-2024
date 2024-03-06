@@ -1,7 +1,7 @@
 import React from 'react'; 
 import { StyleSheet } from 'react-native';
 
-export const colors = StyleSheet.create({
+export const globalStyles = StyleSheet.create({
   plus: {
     backgroundColor: '#1C4EFF',
   },
@@ -24,25 +24,42 @@ export const colors = StyleSheet.create({
     backgroundColor: '#FAFF00',
     fontFamily: 'Karla',
     fontSize: '20px',
-    fontStyle: italic,
     fontWeight: 700,
   },
   timeStamp: {
-    backgroundColor: '#7B7676',
-    fontFamily: 'Work Sans',
-    fontSize: '10px',
+    color: '#7B7676',
+    // fontFamily: 'Work Sans',
     fontWeight: 400
   },
   journalistName: {
-    backgroundColor: '#020202',
-    fontFamily: 'Work Sans',
-    fontSize: '10px',
+    color: '#020202',
+    // fontFamily: 'Work Sans',
+    fontSize: 16,
     fontWeight: 500,
   },
-  headerTitle: {
-    backgroundColor: '#111010',
-    fontFamily: 'Karla',
-    fontSize: '14px',
+  newsTitle: {
+    color: '#111010',
+    fontSize: 18,
     fontWeight: 500,
+  },
+  newsCategory: {
+    fontSize: 10, 
+    fontWeight: 400, 
+    color: '#fff'
+  }
+});
+
+export const colors = {
+  timeStamp: '#7B7676'
+};
+
+export const layout = StyleSheet.create({
+  flexColumn: {
+    display: 'flex', 
+    flexDirection: 'column'
+  },
+  flexRow: {
+    display: 'flex', 
+    flexDirection: 'row'
   }
 });

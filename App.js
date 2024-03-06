@@ -1,21 +1,35 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
 import React from 'react'; 
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-export default function App() {
+// News Screens
+import NewsFeedScreen from './screens/NewsFeed';
+
+const GeneralStack = createNativeStackNavigator();
+const NewsStack = createNativeStackNavigator();
+
+function NewsStackScreen() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NewsStack.Navigator initialRouteName={"NewsFeed"} >
+      <NewsStack.Screen
+        name="NewsFeed"
+        component={ NewsFeedScreen }
+        options={{ headerShown: false }}
+      />
+    </NewsStack.Navigator>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+  return (
+    <NavigationContainer>
+      <GeneralStack.Navigator initialRouteName="NewsStack" >
+        <GeneralStack.Screen 
+          name="NewsStack" 
+          component={ NewsStackScreen } 
+          options={{ headerShown: false }}
+        />
+      </GeneralStack.Navigator>
+    </NavigationContainer>
+  );
+}
