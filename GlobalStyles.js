@@ -46,6 +46,16 @@ export const globalStyles = StyleSheet.create({
     fontSize: 10, 
     fontWeight: 400, 
     color: '#fff'
+  },
+  headline: {
+    fontSize: 32, 
+    fontWeight: 'bold', 
+    color: '#000'
+  },
+  subView: {
+    fontSize: 18, 
+    fontWeight: 500, 
+    color: '#7A7373'
   }
 });
 
