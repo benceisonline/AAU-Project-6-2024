@@ -67,15 +67,15 @@ const styles = StyleSheet.create({
   },
   newsCategory: {
     textAlign: 'center', 
-    paddingVertical: 2.5, 
-    paddingHorizontal: 10,
+    paddingVertical: '0.5%', 
+    paddingHorizontal: '2.5%',
     ...globalStyles.newsCategory
   },
   newsCategoryContainer: {
     alignSelf: 'flex-start', 
     backgroundColor: '#434843', 
     borderRadius: 2.5, 
-    marginTop: 2.5
+    marginTop: '2.5%'
   },
   journalistContainer: {
     alignItems: 'center',
