@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // News Screens
 import NewsFeedScreen from './screens/NewsFeed';
+import ArticleScreen from './screens/Article';
 
 const GeneralStack = createNativeStackNavigator();
 const NewsStack = createNativeStackNavigator();
@@ -16,6 +17,11 @@ function NewsStackScreen() {
         component={ NewsFeedScreen }
         options={{ headerShown: false }}
       />
+      <NewsStack.Screen
+        name="Article"
+        component={ ArticleScreen }
+        options={{ headerShown: false }}
+      />
     </NewsStack.Navigator>
   );
 }
@@ -26,7 +32,7 @@ export default function App() {
       <GeneralStack.Navigator initialRouteName="NewsStack" >
         <GeneralStack.Screen 
           name="NewsStack" 
-          component={ NewsStackScreen } 
+          component={ ArticleScreen } 
           options={{ headerShown: false }}
         />
       </GeneralStack.Navigator>

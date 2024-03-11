@@ -56,6 +56,10 @@ export const globalStyles = StyleSheet.create({
     fontSize: 18, 
     fontWeight: 500, 
     color: '#7A7373'
+  },
+  bodyText: {
+    fontSize: 16.5,
+    lineHeight: 18,
   }
 });
 

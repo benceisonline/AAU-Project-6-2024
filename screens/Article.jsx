@@ -2,6 +2,7 @@ import React from 'react';
 import { Image, View, Text, StyleSheet, SafeAreaView, ScrollView, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+import { globalStyles, layout } from '../GlobalStyles';
 
 const { height, width } = Dimensions.get('window');
 
@@ -43,7 +44,7 @@ Cathrine Wollenberg Zittan fra Kammeradvokaten er blevet indsat som kurator i vi
     },
 ];
 
-export default function ArticleScreen() {
+export default function Article() {
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView 
@@ -52,8 +53,8 @@ export default function ArticleScreen() {
           showsHorizontalScrollIndicator={false}
         >
             <View style={styles.header}>
-                <Ionicons name="arrow-back" size={width * 0.08} color="black" />
-                <Text style={styles.headerText}>Artikler</Text>
+                <Ionicons name="arrow-back" size={'31%'} color="black" />
+                <Text style={globalStyles.headline}>Artikler</Text>
             </View>
             <Image source={articleData[0].article.coverImage} style={styles.cover} />
             <View style={styles.content}>
@@ -62,7 +63,7 @@ export default function ArticleScreen() {
                     <Text>Af </Text>
                     <Text style={styles.authorName}>{articleData[0].author.name}</Text>
                 </View>
-                <Text style={styles.body}>{articleData[0].article.text}</Text>
+                <Text style={globalStyles.bodyText}>{articleData[0].article.text}</Text>
             </View>
         </ScrollView>
       </SafeAreaView>
@@ -74,19 +75,14 @@ const styles = StyleSheet.create({
       flex: 1,
     },
     header: {
-        flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: width * 0.04,
-        paddingTop: height * 0.02,
-        paddingBottom: height * 0.05,
-    },
-    headerText: {
-        marginLeft: width * 0.02,
-        fontSize: width * 0.07,
-        fontWeight: 'bold',
+        paddingHorizontal: '4%',
+        paddingTop: '4.5%',
+        paddingBottom: '11%',
+        ...layout.flexRow,
     },
     scrollView: {
-        marginTop: height * 0.02,
+        marginTop: '4.5%',
     },
     cover: {
         width: '100%',
@@ -94,23 +90,19 @@ const styles = StyleSheet.create({
         resizeMode: 'cover', 
     },
     content: {
-        paddingHorizontal: width * 0.04,
+        paddingHorizontal: '4%',
     },
     articleTitle: {
-        fontSize: width * 0.06,
+        fontSize: '24%',
         fontWeight: 'bold',
-        paddingVertical: height * 0.02,
+        paddingVertical: '4.5%',
     },
     authorContainer: {
-        flexDirection: 'row',
         alignItems: 'center',
-        paddingBottom: height * 0.028,
+        paddingBottom: '6.5%',
+        ...layout.flexRow,
     },
     authorName: {
         textDecorationLine: 'underline',
-    },
-    body: {
-        fontSize: width * 0.04,
-        lineHeight: height * 0.02,
-    },
+    }
 });
