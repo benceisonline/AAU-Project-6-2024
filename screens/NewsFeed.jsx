@@ -41,6 +41,7 @@ const newsData = [
 ];
 
 export default function NewsFeedScreen() {
+  
   const onPressedSubView = (id) => {
     switch (id) {
       case 1:
