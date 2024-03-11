@@ -6,3 +6,5 @@ Then start the program with
 `npx expo start`
 
 Install the Expo Go app and scan the QR code to run on your phone :)
+
+Update IP to your local IP address in App.js and AxiosRequest.js
