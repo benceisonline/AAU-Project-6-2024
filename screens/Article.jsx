@@ -3,8 +3,9 @@ import { Image, View, Text, StyleSheet, SafeAreaView, ScrollView, Dimensions } f
 import { Ionicons } from '@expo/vector-icons';
 
 import { globalStyles, layout } from '../GlobalStyles';
+import PlusIndicator from '../components/PlusIndicator';
 
-const { height, width } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 
 const articleData = [
     {
@@ -47,6 +48,7 @@ Cathrine Wollenberg Zittan fra Kammeradvokaten er blevet indsat som kurator i vi
 export default function Article() {
     return (
       <SafeAreaView style={styles.container}>
+        <PlusIndicator isActive={true} />
         <ScrollView 
           style={styles.scrollView}
           showsVerticalScrollIndicator={false} 

@@ -1,6 +1,7 @@
 import React from 'react'; 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { StatusBar } from 'react-native';
 
 // News Screens
 import NewsFeedScreen from './screens/NewsFeed';
@@ -29,6 +30,7 @@ function NewsStackScreen() {
 export default function App() {
   return (
     <NavigationContainer>
+      <StatusBar barStyle="dark-content" backgroundColor="white" />
       <GeneralStack.Navigator initialRouteName="NewsStack" >
         <GeneralStack.Screen 
           name="NewsStack" 
