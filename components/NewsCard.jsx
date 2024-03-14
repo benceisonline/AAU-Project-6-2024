@@ -1,6 +1,19 @@
 import React from 'react'; 
 import { StyleSheet, View, Text, Image, Dimensions } from 'react-native';
 import { layout, globalStyles } from '../GlobalStyles';
+import PropTypes from 'prop-types';
+
+NewsCard.propTypes = {
+  journalist: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+  }).isRequired,
+  news: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    category: PropTypes.string.isRequired,
+    timestamp: PropTypes.string.isRequired,
+    breaking: PropTypes.bool.isRequired,
+  }).isRequired,
+};
 
 export default function NewsCard({ journalist, news }) {
   const { height } = Dimensions.get('window');
@@ -9,7 +22,7 @@ export default function NewsCard({ journalist, news }) {
   const journalistImageSize = height * 0.05;
   
   return(
-    <View style={ styles.container } >
+    <View style={[styles.container, news.breaking ? styles.breakingContainer : null]} >
 
       <View style={ styles.headerContainer } >
 
@@ -49,7 +62,7 @@ export default function NewsCard({ journalist, news }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#FEFEFE',
+    backgroundColor: '#F4F4F4',
     marginBottom: '5%',
     padding: '5% 5% 5% 5%',
     borderRadius: 7.5,
@@ -88,5 +101,8 @@ const styles = StyleSheet.create({
   headerContainer: {
     justifyContent: 'space-between',
     ...layout.flexRow
+  },
+  breakingContainer: {
+    backgroundColor: 'yellow',
   }
 });

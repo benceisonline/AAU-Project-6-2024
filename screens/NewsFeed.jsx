@@ -11,7 +11,8 @@ const newsData = [
     news: {
       title: 'Opinion: Han ligner én, der stadig har nøglerne til borgen.',
       category: 'Opinion',
-      timestamp: '34m'
+      timestamp: '34m',
+      breaking: true
     }
   },
   {
@@ -19,7 +20,8 @@ const newsData = [
     news: {
       title: 'Opinion: Han ligner én, der stadig har nøglerne til borgen.',
       category: 'Opinion',
-      timestamp: '34m'
+      timestamp: '34m',
+      breaking: false
     }
   },
   {
@@ -27,7 +29,8 @@ const newsData = [
     news: {
       title: 'Opinion: Han ligner én, der stadig har nøglerne til borgen.',
       category: 'Opinion',
-      timestamp: '34m'
+      timestamp: '34m',
+      breaking: false
     }
   },
   {
@@ -35,7 +38,8 @@ const newsData = [
     news: {
       title: 'Opinion: Han ligner én, der stadig har nøglerne til borgen.',
       category: 'Opinion',
-      timestamp: '34m'
+      timestamp: '34m',
+      breaking: false
     }
   },
 ];

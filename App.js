@@ -32,7 +32,7 @@ export default function App() {
       <GeneralStack.Navigator initialRouteName="NewsStack" >
         <GeneralStack.Screen 
           name="NewsStack" 
-          component={ ArticleScreen } 
+          component={ NewsFeedScreen } 
           options={{ headerShown: false }}
         />
       </GeneralStack.Navigator>
