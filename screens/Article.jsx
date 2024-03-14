@@ -9,11 +9,11 @@ import PropTypes from 'prop-types';
 const { height } = Dimensions.get('window');
 
 export default function Article({ route }) {
+	const journalistName = "Lasse Claes";
 	const navigation = useNavigation();
-	const { news } = route.params;
-	console.log(news);
+	const { article } = route.params;
 
-	if (!news) {
+	if (!article) {
 		return(
 			<Error errorText={'Aktiklen blev ikke fundet'} />
 		);
@@ -35,18 +35,18 @@ export default function Article({ route }) {
 
 					<View style={styles.content}>
 							<Text style={styles.articleTitle}>
-								{ news.title }
+								{ article.title }
 							</Text>
 
 							<View style={styles.authorContainer}>
 									<Text>Af </Text>
 									<Text style={styles.authorName}>
-										{ news.journalistName }
+										{ journalistName }
 									</Text>
 							</View>
 
 							<Text style={globalStyles.bodyText}>
-								{ news.body }
+								{ article.body }
 							</Text>
 					</View>
 			</ScrollView>

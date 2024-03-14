@@ -1,9 +1,9 @@
-const axios = require('axios');
+const axios = require('axios').default;
 
-const localUrl = '192.168.1.79';
+const localUrl = '172.20.10.13';
 const apiUrl = `http://${localUrl}:8000`; // Replace with your FastAPI server URL
 
-export const fetchPredictions = async (userId) => {
+const fetchPredictions = async (userId) => {
   const requestData = {
     user_id: userId,
   };
@@ -20,3 +20,5 @@ export const fetchPredictions = async (userId) => {
     throw error.response ? error.response.data : error.message;
   }
 };
+
+module.exports = fetchPredictions;

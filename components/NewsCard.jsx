@@ -6,16 +6,29 @@ import PropTypes from 'prop-types';
 
 const { height } = Dimensions.get('window');
 
-export default function NewsCard({ news }) {
+export default function NewsCard({ article }) {
+  const journalistName = "Lasse Claes";
   const navigation = useNavigation();
 
   const thumbnailHeight = height * 0.2;
   const journalistImageSize = height * 0.05;
 
   const handleOnPress = () => {
-    navigation.navigate('Article', { news: news });
+    navigation.navigate('Article', { article: article });
   }
   
+  // Function to format date
+  const formatPublishedTime = (published_time) => {
+    const date = new Date(published_time);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   return(
     <TouchableOpacity style={ styles.container } onPress={handleOnPress} >
       <View style={ styles.headerContainer } >
@@ -25,12 +38,12 @@ export default function NewsCard({ news }) {
 
           <View style={ layout.flexColumn } >
             <Text style={ globalStyles.journalistName } >
-              { news.journalistName }
+              { journalistName }
             </Text>
 
             <View style={ styles.newsCategoryContainer } >
               <Text style={ styles.newsCategory } >
-                { news.category }
+                { article.category_str }
               </Text>
             </View>
 
@@ -39,7 +52,7 @@ export default function NewsCard({ news }) {
 
         <View style={ styles.timeStampContainer }>
           <Text style={ globalStyles.timeStamp } >
-            { news.timestamp }
+            { formatPublishedTime(article.published_time) }
           </Text>
         </View>
 
@@ -48,7 +61,7 @@ export default function NewsCard({ news }) {
       <Image source={require(`../assets/thumbnail_1.png`)} resizeMode='cover' style={[ styles.thumbnail, { height: thumbnailHeight }]} />
 
       <Text style={ globalStyles.newsTitle }>
-        { news.title }
+        { article.title }
       </Text>
     </TouchableOpacity>
   );
