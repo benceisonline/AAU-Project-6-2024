@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, View, Text, Image, Dimensions, TouchableOpacity } from 'react-native';
 import { layout, globalStyles } from '../GlobalStyles';
+import PropTypes from 'prop-types';
 
 const { height } = Dimensions.get('window');
 
@@ -53,9 +54,22 @@ export default function NewsCard({ news }) {
   );
 }
 
+NewsCard.propTypes = {
+	news: PropTypes.shape({
+		newsId: PropTypes.number.isRequired,
+		title: PropTypes.string.isRequired,
+		journalistName: PropTypes.string.isRequired,
+		coverImage: PropTypes.string.isRequired,
+		category: PropTypes.string.isRequired,
+		timestamp: PropTypes.string.isRequired,
+		breaking: PropTypes.bool.isRequired,
+		body: PropTypes.string.isRequired,
+	}),
+};
+
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#FEFEFE',
+    backgroundColor: '#F4F4F4',
     marginBottom: '5%',
     padding: '5% 5% 5% 5%',
     borderRadius: 7.5,
@@ -94,5 +108,8 @@ const styles = StyleSheet.create({
   headerContainer: {
     justifyContent: 'space-between',
     ...layout.flexRow
+  },
+  breakingContainer: {
+    backgroundColor: 'yellow',
   }
 });

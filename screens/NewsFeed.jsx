@@ -9,7 +9,7 @@ import Error from '../components/Error';
 const newsData = [
   {
     news: {
-      newsId: '1',
+      newsId: 1,
       title: 'Opinion: Han ligner én, der stadig har nøglerne til borgen.',
       journalistName: 'Lasse Claes',
       coverImage: 'https://via.placeholder.com/150',
@@ -31,7 +31,7 @@ const newsData = [
   },
   {
     news: {
-      newsId: '2',
+      newsId: 2,
       title: 'Opinion: Han ligner én, der stadig har nøglerne til borgen.',
       journalistName: 'Lasse Claes',
       coverImage: 'https://via.placeholder.com/150',
@@ -43,7 +43,7 @@ const newsData = [
   },
   {
     news: {
-      newsId: '3',
+      newsId: 3,
       title: 'Opinion: Han ligner én, der stadig har nøglerne til borgen.',
       journalistName: 'Lasse Claes',
       coverImage: 'https://via.placeholder.com/150',
@@ -55,7 +55,7 @@ const newsData = [
   },
   {
     news: {
-      newsId: '4',
+      newsId: 4,
       title: 'Opinion: Han ligner én, der stadig har nøglerne til borgen.',
       journalistName: 'Lasse Claes',
       coverImage: 'https://via.placeholder.com/150',
