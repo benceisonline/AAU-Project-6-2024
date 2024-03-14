@@ -48,16 +48,16 @@ Cathrine Wollenberg Zittan fra Kammeradvokaten er blevet indsat som kurator i vi
 export default function Article() {
     return (
       <SafeAreaView style={styles.container}>
+        <PlusIndicator isActive={true} />
+        <View style={styles.header}>
+            <Ionicons name="arrow-back" size={'31%'} color="black" />
+            <Text style={globalStyles.headline}>Artikler</Text>
+        </View>
         <ScrollView 
           style={styles.scrollView}
           showsVerticalScrollIndicator={false} 
           showsHorizontalScrollIndicator={false}
         >
-            <PlusIndicator isActive={true} />
-            <View style={styles.header}>
-                <Ionicons name="arrow-back" size={'31%'} color="black" />
-                <Text style={globalStyles.headline}>Artikler</Text>
-            </View>
             <Image source={articleData[0].article.coverImage} style={styles.cover} />
             <View style={styles.content}>
                 <Text style={styles.articleTitle}>{articleData[0].article.title}</Text>
@@ -79,8 +79,7 @@ const styles = StyleSheet.create({
     header: {
         alignItems: 'center',
         paddingHorizontal: '4%',
-        paddingTop: '4.5%',
-        paddingBottom: '11%',
+        paddingTop: '1.5%',
         ...layout.flexRow,
     },
     scrollView: {

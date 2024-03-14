@@ -7,12 +7,12 @@ const PlusIndicator = ({ isActive }) => {
     const triangleColor = isActive ? '#1C4EFF' : '#C1C1C1';
 
     return (
-        <View style={{ position: 'absolute', top: -37, right: -37 }}>
+        <View style={{ position: 'absolute', top: 10, right: -37 }}>
             {/* Outer Icon */}
-            <Icon name="caret-down" size={125} color={triangleColor} style={{ transform: [{ rotate: '-135deg' }] }} />
+            <Icon name="caret-down" size={100} color={triangleColor} style={{ transform: [{ rotate: '-135deg' }] }} />
             
             {/* Inner Icon (White Plus) */}
-            <FontAwesomeIcon name="plus" size={22} color="white" style={{ position: 'absolute', top: 55, right: 53 }} />
+            <FontAwesomeIcon name="plus" size={22} color="white" style={{ position: 'absolute', top: 38, right: 48 }} />
         </View>
     );
 };
