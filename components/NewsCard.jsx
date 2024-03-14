@@ -7,6 +7,7 @@ NewsCard.propTypes = {
   article: PropTypes.shape({
     title: PropTypes.string.isRequired,
     subtitle: PropTypes.string.isRequired,
+    body: PropTypes.string.isRequired,
     category_str: PropTypes.string.isRequired,
     published_time: PropTypes.string.isRequired,
     url: PropTypes.string.isRequired
@@ -56,7 +57,7 @@ export default function NewsCard({ article }) {
 
         <View style={ styles.timeStampContainer }>
           <Text style={ globalStyles.timeStamp } >
-            { formatPublishedTime(article.published_time) } {/* Format the published time */}
+            { formatPublishedTime(article.published_time) }
           </Text>
         </View>
 

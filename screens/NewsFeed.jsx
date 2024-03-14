@@ -3,7 +3,7 @@ import { StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import NewsCard from '../components/NewsCard';
 import NewsHeader from '../components/NewsHeader';
 import { layout } from '../GlobalStyles';
-import fetchData from '../AxiosRequest'; // Import fetchData function from AxiosRequest file
+import fetchData from '../utils/AxiosRequest'; // Import fetchData function from AxiosRequest file
 
 export default function NewsFeedScreen() {
   const [recommendedArticles, setRecommendedArticles] = useState([]);
