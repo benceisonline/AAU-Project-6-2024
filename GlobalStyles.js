@@ -14,7 +14,7 @@ export const globalStyles = StyleSheet.create({
   topic: {
     backgroundColor: '#158A19',
     fontFamily: 'Work Sans',
-    fontSize: '8px',
+    fontSize: 8,
     fontWeight: 400
   },
   newsBackground: {
@@ -59,13 +59,33 @@ export const globalStyles = StyleSheet.create({
   },
   bodyText: {
     fontSize: 16.5,
-    lineHeight: 18,
-  }
+  },
+  articleTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
 });
 
 export const colors = {
   timeStamp: '#7B7676'
 };
+
+export const errorScreen = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FCFCFC'
+  },
+  errorText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#000'
+  },
+  button: {
+    marginTop: '5%',
+  }
+});
 
 export const layout = StyleSheet.create({
   flexColumn: {
@@ -75,5 +95,11 @@ export const layout = StyleSheet.create({
   flexRow: {
     display: 'flex', 
     flexDirection: 'row'
-  }
+  },
+  centeredRow: {  
+    display: 'flex', 
+    flexDirection: 'row', 
+    justifyContent: 'center', 
+    alignItems: 'center'
+  },
 });

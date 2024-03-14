@@ -1,16 +1,22 @@
 import React from 'react'; 
-import { StyleSheet, View, Text, Image, Dimensions } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { StyleSheet, View, Text, Image, Dimensions, TouchableOpacity } from 'react-native';
 import { layout, globalStyles } from '../GlobalStyles';
 
-export default function NewsCard({ journalist, news }) {
-  const { height } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
+
+export default function NewsCard({ news }) {
+  const navigation = useNavigation();
 
   const thumbnailHeight = height * 0.2;
   const journalistImageSize = height * 0.05;
+
+  const handleOnPress = () => {
+    navigation.navigate('Article', { news: news });
+  }
   
   return(
-    <View style={ styles.container } >
-
+    <TouchableOpacity style={ styles.container } onPress={handleOnPress} >
       <View style={ styles.headerContainer } >
 
         <View style={ styles.journalistContainer } >
@@ -18,7 +24,7 @@ export default function NewsCard({ journalist, news }) {
 
           <View style={ layout.flexColumn } >
             <Text style={ globalStyles.journalistName } >
-              { journalist.name }
+              { news.journalistName }
             </Text>
 
             <View style={ styles.newsCategoryContainer } >
@@ -43,7 +49,7 @@ export default function NewsCard({ journalist, news }) {
       <Text style={ globalStyles.newsTitle }>
         { news.title }
       </Text>
-    </View>
+    </TouchableOpacity>
   );
 }
 

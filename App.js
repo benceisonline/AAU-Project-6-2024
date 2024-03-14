@@ -9,7 +9,7 @@ import ArticleScreen from './screens/Article';
 const GeneralStack = createNativeStackNavigator();
 const NewsStack = createNativeStackNavigator();
 
-function NewsStackScreen() {
+function NewsStackScreens() {
   return (
     <NewsStack.Navigator initialRouteName={"NewsFeed"} >
       <NewsStack.Screen
@@ -32,7 +32,7 @@ export default function App() {
       <GeneralStack.Navigator initialRouteName="NewsStack" >
         <GeneralStack.Screen 
           name="NewsStack" 
-          component={ ArticleScreen } 
+          component={ NewsStackScreens } 
           options={{ headerShown: false }}
         />
       </GeneralStack.Navigator>
