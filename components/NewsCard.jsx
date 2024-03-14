@@ -1,25 +1,21 @@
 import React from 'react'; 
-import { StyleSheet, View, Text, Image, Dimensions } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { StyleSheet, View, Text, Image, Dimensions, TouchableOpacity } from 'react-native';
 import { layout, globalStyles } from '../GlobalStyles';
 import PropTypes from 'prop-types';
 
-NewsCard.propTypes = {
-  article: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    subtitle: PropTypes.string.isRequired,
-    body: PropTypes.string.isRequired,
-    category_str: PropTypes.string.isRequired,
-    published_time: PropTypes.string.isRequired,
-    url: PropTypes.string.isRequired
-  }).isRequired,
-};
+const { height } = Dimensions.get('window');
 
 export default function NewsCard({ article }) {
   const journalistName = "Lasse Claes";
-  const { height } = Dimensions.get('window');
+  const navigation = useNavigation();
 
   const thumbnailHeight = height * 0.2;
   const journalistImageSize = height * 0.05;
+
+  const handleOnPress = () => {
+    navigation.navigate('Article', { article: article });
+  }
   
   // Function to format date
   const formatPublishedTime = (published_time) => {
@@ -34,8 +30,7 @@ export default function NewsCard({ article }) {
   };
 
   return(
-    <View style={styles.container} >
-
+    <TouchableOpacity style={ styles.container } onPress={handleOnPress} >
       <View style={ styles.headerContainer } >
 
         <View style={ styles.journalistContainer } >
@@ -68,9 +63,22 @@ export default function NewsCard({ article }) {
       <Text style={ globalStyles.newsTitle }>
         { article.title }
       </Text>
-    </View>
+    </TouchableOpacity>
   );
 }
+
+NewsCard.propTypes = {
+	news: PropTypes.shape({
+		newsId: PropTypes.number.isRequired,
+		title: PropTypes.string.isRequired,
+		journalistName: PropTypes.string.isRequired,
+		coverImage: PropTypes.string.isRequired,
+		category: PropTypes.string.isRequired,
+		timestamp: PropTypes.string.isRequired,
+		breaking: PropTypes.bool.isRequired,
+		body: PropTypes.string.isRequired,
+	}),
+};
 
 const styles = StyleSheet.create({
   container: {

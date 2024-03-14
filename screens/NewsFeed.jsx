@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'; 
 import { StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { layout } from '../GlobalStyles';
 import NewsCard from '../components/NewsCard';
 import NewsHeader from '../components/NewsHeader';
-import { layout } from '../GlobalStyles';
-import fetchData from '../utils/AxiosRequest'; // Import fetchData function from AxiosRequest file
+import Error from '../components/Error';
+import fetchPredictions from '../utils/AxiosRequest'; // Import fetchData function from AxiosRequest file
 
 export default function NewsFeedScreen() {
   const [recommendedArticles, setRecommendedArticles] = useState([]);
@@ -11,8 +12,9 @@ export default function NewsFeedScreen() {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const data = await fetchData("1765193"); // Pass the user_id to fetch data
-        setRecommendedArticles(data.recommended_items);
+        const userID = "1765193"; 
+        const predictions = await fetchPredictions(userID);
+        setRecommendedArticles(predictions.recommended_items);
       } catch (error) {
         console.error('Error fetching articles:', error);
       }
@@ -42,6 +44,12 @@ export default function NewsFeedScreen() {
     }
   };
 
+  if (recommendedArticles.length === 0) {
+		return(
+			<Error errorText={'Aktiklerne blev ikke fundet'} />
+		);
+	}
+
   return (
     <SafeAreaView style={ styles.container } >
       <NewsHeader onPressedSubView={onPressedSubView} />
@@ -51,7 +59,7 @@ export default function NewsFeedScreen() {
         showsHorizontalScrollIndicator={false}
       >
         {recommendedArticles.map((article, index) => (
-          <NewsCard key={index} article={article} />
+          <NewsCard key={article.article_id} article={article} />
         ))}
       </ScrollView>
     </SafeAreaView>
