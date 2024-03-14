@@ -4,8 +4,6 @@ import NewsCard from '../components/NewsCard';
 import NewsHeader from '../components/NewsHeader';
 import { layout } from '../GlobalStyles';
 
-import PlusIndicator from '../components/PlusIndicator';
-
 // mock data
 const newsData = [
   {
@@ -68,7 +66,6 @@ export default function NewsFeedScreen() {
   return (
     <SafeAreaView style={ styles.container } >
       <NewsHeader onPressedSubView={onPressedSubView} />
-      <PlusIndicator isActive={true} />
       <ScrollView 
         style={ styles.feed } 
         showsVerticalScrollIndicator={false} 
