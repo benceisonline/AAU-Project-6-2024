@@ -1,6 +1,6 @@
-const axios = require('axios');
+const axios = require('axios').default;
 
-const apiUrl = 'http://192.168.1.79:8000/predict'; // Replace with your FastAPI server URL
+const apiUrl = 'http://172.20.10.13:8000/predict'; // Replace with your FastAPI server URL
 
 const fetchData = async (userId) => {
   const requestData = {

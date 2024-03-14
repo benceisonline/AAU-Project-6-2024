@@ -1,51 +1,26 @@
-import React from 'react'; 
+import React, { useState, useEffect } from 'react'; 
 import { StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import NewsCard from '../components/NewsCard';
 import NewsHeader from '../components/NewsHeader';
 import { layout } from '../GlobalStyles';
-
-// mock data
-const newsData = [
-  {
-    journalist: { name: 'Lasse Claes', imageID: 'lasse_claes.jpg' },
-    news: {
-      title: 'Opinion: Han ligner én, der stadig har nøglerne til borgen.',
-      category: 'Opinion',
-      timestamp: '34m',
-      breaking: true
-    }
-  },
-  {
-    journalist: { name: 'Lasse Claes', imageID: 'lasse_claes.jpg' },
-    news: {
-      title: 'Opinion: Han ligner én, der stadig har nøglerne til borgen.',
-      category: 'Opinion',
-      timestamp: '34m',
-      breaking: false
-    }
-  },
-  {
-    journalist: { name: 'Lasse Claes', imageID: 'lasse_claes.jpg' },
-    news: {
-      title: 'Opinion: Han ligner én, der stadig har nøglerne til borgen.',
-      category: 'Opinion',
-      timestamp: '34m',
-      breaking: false
-    }
-  },
-  {
-    journalist: { name: 'Lasse Claes', imageID: 'lasse_claes.jpg' },
-    news: {
-      title: 'Opinion: Han ligner én, der stadig har nøglerne til borgen.',
-      category: 'Opinion',
-      timestamp: '34m',
-      breaking: false
-    }
-  },
-];
+import fetchData from '../AxiosRequest'; // Import fetchData function from AxiosRequest file
 
 export default function NewsFeedScreen() {
-  
+  const [recommendedArticles, setRecommendedArticles] = useState([]);
+
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const data = await fetchData("1765193"); // Pass the user_id to fetch data
+        setRecommendedArticles(data.recommended_items);
+      } catch (error) {
+        console.error('Error fetching articles:', error);
+      }
+    };
+
+    fetchArticles();
+  }, []);
+
   const onPressedSubView = (id) => {
     switch (id) {
       case 1:
@@ -75,8 +50,8 @@ export default function NewsFeedScreen() {
         showsVerticalScrollIndicator={false} 
         showsHorizontalScrollIndicator={false}
       >
-        {newsData.map((item, index) => (
-          <NewsCard key={index} journalist={item.journalist} news={item.news} />
+        {recommendedArticles.map((article, index) => (
+          <NewsCard key={index} article={article} />
         ))}
       </ScrollView>
     </SafeAreaView>

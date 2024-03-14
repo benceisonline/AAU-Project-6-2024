@@ -4,25 +4,36 @@ import { layout, globalStyles } from '../GlobalStyles';
 import PropTypes from 'prop-types';
 
 NewsCard.propTypes = {
-  journalist: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-  }).isRequired,
-  news: PropTypes.shape({
+  article: PropTypes.shape({
     title: PropTypes.string.isRequired,
-    category: PropTypes.string.isRequired,
-    timestamp: PropTypes.string.isRequired,
-    breaking: PropTypes.bool.isRequired,
+    subtitle: PropTypes.string.isRequired,
+    category_str: PropTypes.string.isRequired,
+    published_time: PropTypes.string.isRequired,
+    url: PropTypes.string.isRequired
   }).isRequired,
 };
 
-export default function NewsCard({ journalist, news }) {
+export default function NewsCard({ article }) {
+  const journalistName = "Lasse Claes";
   const { height } = Dimensions.get('window');
 
   const thumbnailHeight = height * 0.2;
   const journalistImageSize = height * 0.05;
   
+  // Function to format date
+  const formatPublishedTime = (published_time) => {
+    const date = new Date(published_time);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   return(
-    <View style={[styles.container, news.breaking ? styles.breakingContainer : null]} >
+    <View style={styles.container} >
 
       <View style={ styles.headerContainer } >
 
@@ -31,12 +42,12 @@ export default function NewsCard({ journalist, news }) {
 
           <View style={ layout.flexColumn } >
             <Text style={ globalStyles.journalistName } >
-              { journalist.name }
+              { journalistName }
             </Text>
 
             <View style={ styles.newsCategoryContainer } >
               <Text style={ styles.newsCategory } >
-                { news.category }
+                { article.category_str }
               </Text>
             </View>
 
@@ -45,7 +56,7 @@ export default function NewsCard({ journalist, news }) {
 
         <View style={ styles.timeStampContainer }>
           <Text style={ globalStyles.timeStamp } >
-            { news.timestamp }
+            { formatPublishedTime(article.published_time) } {/* Format the published time */}
           </Text>
         </View>
 
@@ -54,7 +65,7 @@ export default function NewsCard({ journalist, news }) {
       <Image source={require(`../assets/thumbnail_1.png`)} resizeMode='cover' style={[ styles.thumbnail, { height: thumbnailHeight }]} />
 
       <Text style={ globalStyles.newsTitle }>
-        { news.title }
+        { article.title }
       </Text>
     </View>
   );
