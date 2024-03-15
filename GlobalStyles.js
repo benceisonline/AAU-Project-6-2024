@@ -44,7 +44,8 @@ export const globalStyles = StyleSheet.create({
   newsCategory: {
     fontSize: 10, 
     fontWeight: 400, 
-    color: '#fff'
+    color: '#fff',
+    textTransform: 'capitalize'
   },
   headline: {
     fontSize: 32, 
@@ -98,6 +99,12 @@ export const layout = StyleSheet.create({
   centeredRow: {  
     display: 'flex', 
     flexDirection: 'row', 
+    justifyContent: 'center', 
+    alignItems: 'center'
+  },
+  centeredColumn: {  
+    display: 'flex', 
+    flexDirection: 'column', 
     justifyContent: 'center', 
     alignItems: 'center'
   },
