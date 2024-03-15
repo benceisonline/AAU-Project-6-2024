@@ -1,16 +1,36 @@
 import React from 'react'; 
-import { StyleSheet, View, Text, Image, Dimensions } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { StyleSheet, View, Text, Image, Dimensions, TouchableOpacity } from 'react-native';
 import { layout, globalStyles } from '../GlobalStyles';
+import PropTypes from 'prop-types';
 
-export default function NewsCard({ journalist, news }) {
-  const { height } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
+
+export default function NewsCard({ article }) {
+  const journalistName = "Lasse Claes";
+  const navigation = useNavigation();
 
   const thumbnailHeight = height * 0.2;
   const journalistImageSize = height * 0.05;
-  
-  return(
-    <View style={ styles.container } >
 
+  const handleOnPress = () => {
+    navigation.navigate('Article', { article: article });
+  }
+  
+  // Function to format date
+  const formatPublishedTime = (published_time) => {
+    const date = new Date(published_time);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  return(
+    <TouchableOpacity style={ styles.container } onPress={handleOnPress} >
       <View style={ styles.headerContainer } >
 
         <View style={ styles.journalistContainer } >
@@ -18,12 +38,12 @@ export default function NewsCard({ journalist, news }) {
 
           <View style={ layout.flexColumn } >
             <Text style={ globalStyles.journalistName } >
-              { journalist.name }
+              { journalistName }
             </Text>
 
             <View style={ styles.newsCategoryContainer } >
               <Text style={ styles.newsCategory } >
-                { news.category }
+                { article.category_str }
               </Text>
             </View>
 
@@ -32,7 +52,7 @@ export default function NewsCard({ journalist, news }) {
 
         <View style={ styles.timeStampContainer }>
           <Text style={ globalStyles.timeStamp } >
-            { news.timestamp }
+            { formatPublishedTime(article.published_time) }
           </Text>
         </View>
 
@@ -41,15 +61,28 @@ export default function NewsCard({ journalist, news }) {
       <Image source={require(`../assets/thumbnail_1.png`)} resizeMode='cover' style={[ styles.thumbnail, { height: thumbnailHeight }]} />
 
       <Text style={ globalStyles.newsTitle }>
-        { news.title }
+        { article.title }
       </Text>
-    </View>
+    </TouchableOpacity>
   );
 }
 
+NewsCard.propTypes = {
+	news: PropTypes.shape({
+		newsId: PropTypes.number.isRequired,
+		title: PropTypes.string.isRequired,
+		journalistName: PropTypes.string.isRequired,
+		coverImage: PropTypes.string.isRequired,
+		category: PropTypes.string.isRequired,
+		timestamp: PropTypes.string.isRequired,
+		breaking: PropTypes.bool.isRequired,
+		body: PropTypes.string.isRequired,
+	}),
+};
+
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#FEFEFE',
+    backgroundColor: '#F4F4F4',
     marginBottom: '5%',
     padding: '5% 5% 5% 5%',
     borderRadius: 7.5,
@@ -88,5 +121,8 @@ const styles = StyleSheet.create({
   headerContainer: {
     justifyContent: 'space-between',
     ...layout.flexRow
+  },
+  breakingContainer: {
+    backgroundColor: 'yellow',
   }
 });

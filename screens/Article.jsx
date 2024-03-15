@@ -1,115 +1,105 @@
 import React from 'react'; 
-import { Image, View, Text, StyleSheet, SafeAreaView, ScrollView, Dimensions } from 'react-native';
+import { Image, View, Text, StyleSheet, SafeAreaView, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
+import { useNavigation } from '@react-navigation/native';
 import { globalStyles, layout } from '../GlobalStyles';
-import PlusIndicator from '../components/PlusIndicator';
+
+import Error from '../components/Error';
+import PropTypes from 'prop-types';
 
 const { height } = Dimensions.get('window');
 
-const articleData = [
-    {
-        author: { name: 'Peter Degenkolv', imageID: '' },
-        article: {
-          title: 'Altan.dk under konkursbehandling: Ledende medarbejder politianmeldt',
-          coverImage: require('../assets/cool_building.jpg'),
-          category: 'Penge',
-          timestamp: '29. aug. 2023 kl. 10:34',
-          text: `'Kære Familie. I morgen, når fløjten lyder for sidste gang, er kampen slut for mig, og min tid i Altan.dk er forbi'.
+export default function Article({ route }) {
+	const journalistName = "Lasse Claes";
+	const navigation = useNavigation();
+	const { article } = route.params;
 
-Sådan indleder den administrerende direktør i Danmarks største altanvirksomhed, Altan.dk, Casper Knudsen, i en mail, der er sendt ud til sine medarbejdere, som Ekstra Bladet er i besiddelse af.
+	if (!article) {
+		return(
+			<Error errorText={'Aktiklen blev ikke fundet'} />
+		);
+	}
 
-Til Ekstra Bladet bekræfter virksomhedens presseansvarlige, Morten Huse Eikrem-Jeppesen, at selskabet i dag 29. august er taget under konkursbehandling.
+	return (
+		<SafeAreaView style={styles.container}>
+			<ScrollView 
+				style={styles.scrollView}
+				showsVerticalScrollIndicator={false} 
+				showsHorizontalScrollIndicator={false}
+			>
+					<TouchableOpacity style={styles.header} onPress={() => navigation.goBack()}>
+							<Ionicons name="arrow-back" size={height * 0.04} color="black" />
+							<Text style={globalStyles.headline}>Artikler</Text>
+					</TouchableOpacity>
 
-'Altan.dk er i dag 29. august blevet taget under konkursbehandling på baggrund af en begæring indgivet af Gældsstyrelsen.'
+					<Image source={require('../assets/cool_building.jpg')} style={styles.cover} />
 
-'Umiddelbart efter at selskabet modtog konkursbegæringen, har selskabet med bistand fra selskabets revision og med juridisk bistand indledt et udredningsarbejde.'
+					<View style={styles.content}>
+							<Text style={styles.articleTitle}>
+								{ article.title }
+							</Text>
 
-'Mens udredningsarbejdet har stået på, har det været forsøgt at sikre den fortsatte drift ved at undersøge mulighederne for at tilføre Altan.dk mere kapital og/eller et helt eller delvist salg af virksomheden. Dette har ikke været muligt,' skriver Altan.dk til Ekstra Bladet.
+							<View style={styles.authorContainer}>
+									<Text>Af </Text>
+									<Text style={styles.authorName}>
+										{ journalistName }
+									</Text>
+							</View>
 
-Ifølge Ekstra Bladets oplysninger har Gældsstyrelsen gjort krav på et stort millionbeløb.
-
-Medarbejder bortvist og politianmeldt
-Altan.dk oplyser til Ekstra Bladet, at en ledende medarbejder i forbindelse med udredningen af virksomheden er blevet politianmeldt, fordi der er fundet uregelmæssigheder i selskabets bogholderi.
-
-'Også på den baggrund måtte det konstateres, at det ikke har været muligt at fortsætte virksomhedens drift.'
-
-'Udredningsarbejdet har endvidere medført, at ledelsen har bortvist og politianmeldt en ledende medarbejder i selskabets økonomifunktion,' oplyser virksomheden til Ekstra Bladet.
-
-Ifølge virksomhedens seneste regnskab havde de 108 medarbejdere ansat. Selskabet har også ifølge seneste regnskab en egenkapital på 33 mio. kr., men alligevel har Altan.dk ikke været i stand til at betale det beløb, som Gældsstyrelsen kræver.
-
-Både selskabets direktør Casper Gorm Knudsen og virksomhedens bestyrelsesformand Allan Søgaard Larsen afviser at stille op til interview, men henviser til kurator, der fortsat er i gang med at danne sig et overblik over sagen.
-
-Cathrine Wollenberg Zittan fra Kammeradvokaten er blevet indsat som kurator i virksomheden.'`
-        }
-    },
-];
-
-export default function Article() {
-    return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-            <PlusIndicator isActive={true} />
-            <View style={styles.headerMenu}>
-                <Ionicons name="arrow-back" size={'31%'} color="black" />
-                <Text style={globalStyles.headline}>Artikler</Text>
-            </View>
-        </View>
-        <ScrollView 
-          style={styles.scrollView}
-          showsVerticalScrollIndicator={false} 
-          showsHorizontalScrollIndicator={false}
-        >
-            <Image source={articleData[0].article.coverImage} style={styles.cover} />
-            <View style={styles.content}>
-                <Text style={styles.articleTitle}>{articleData[0].article.title}</Text>
-                <View style={styles.authorContainer}>
-                    <Text>Af </Text>
-                    <Text style={styles.authorName}>{articleData[0].author.name}</Text>
-                </View>
-                <Text style={globalStyles.bodyText}>{articleData[0].article.text}</Text>
-            </View>
-        </ScrollView>
-      </SafeAreaView>
-    );
+							<Text style={globalStyles.bodyText}>
+								{ article.body }
+							</Text>
+					</View>
+			</ScrollView>
+		</SafeAreaView>
+	);
 }
+
+Article.propTypes = {
+	news: PropTypes.shape({
+		newsId: PropTypes.number.isRequired,
+		title: PropTypes.string.isRequired,
+		journalistName: PropTypes.string.isRequired,
+		coverImage: PropTypes.string.isRequired,
+		category: PropTypes.string.isRequired,
+		timestamp: PropTypes.string.isRequired,
+		breaking: PropTypes.bool.isRequired,
+		body: PropTypes.string.isRequired,
+	}),
+};
 
 const styles = StyleSheet.create({
     container: {
       flex: 1,
     },
     header: {
-        alignItems: 'center',
-        paddingHorizontal: '4%',
-        ...layout.flexRow,
+			alignItems: 'center',
+			paddingHorizontal: '4%',
+			paddingTop: '4.5%',
+			paddingBottom: '11%',
+			...layout.flexRow,
     },
     scrollView: {
         marginTop: '4.5%',
     },
     cover: {
-        width: '100%',
-        height: height * 0.23,
-        resizeMode: 'cover', 
+			width: '100%',
+			height: height * 0.23,
+			resizeMode: 'cover', 
     },
     content: {
-        paddingHorizontal: '4%',
+			paddingHorizontal: '4%',
     },
     articleTitle: {
-        fontSize: '24%',
-        fontWeight: 'bold',
-        paddingVertical: '4.5%',
+			paddingVertical: '4.5%',
+			...globalStyles.articleTitle
     },
     authorContainer: {
-        alignItems: 'center',
-        paddingBottom: '6.5%',
-        ...layout.flexRow,
+			alignItems: 'center',
+			paddingBottom: '6.5%',
+			...layout.flexRow,
     },
     authorName: {
-        textDecorationLine: 'underline',
-    },
-    headerMenu: {
-        ...layout.flexRow,
-        alignItems: 'center',
-        top: 0,
+			textDecorationLine: 'underline',
     }
 });
