@@ -3,7 +3,7 @@ import { Image, View, Text, StyleSheet, SafeAreaView, ScrollView, Dimensions, To
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { globalStyles, layout } from '../GlobalStyles';
-
+import ERRORACTIONS from '../constants/ErrorActions';
 import Error from '../components/Error';
 import PropTypes from 'prop-types';
 import PlusIndicator from '../components/PlusIndicator';
@@ -17,7 +17,7 @@ export default function Article({ route }) {
 
 	if (!article) {
 		return(
-			<Error errorText={'Aktiklen blev ikke fundet'} />
+			<Error errorText={'Aktiklen blev ikke fundet'} action={ERRORACTIONS.BACK}/>
 		);
 	}
 
