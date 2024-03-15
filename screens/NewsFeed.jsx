@@ -4,83 +4,73 @@ import { layout } from '../GlobalStyles';
 import NewsCard from '../components/NewsCard';
 import NewsHeader from '../components/NewsHeader';
 import Error from '../components/Error';
-import fetchPredictions from '../utils/AxiosRequest';
+import { fetchPredictions, fetchAllArticles } from '../utils/AxiosRequest';
 import ERRORACTIONS from '../constants/ErrorActions';
-import SplashScreen from '../components/SplashScreen'; // Import SplashScreen component
+import SplashScreen from '../components/SplashScreen'; 
 
 
 export default function NewsFeedScreen() {
-  const [recommendedArticles, setRecommendedArticles] = useState([]);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [subview, setSubview] = useState(1);
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const userID = "1765193"; 
-  
-  const handleRefresh = async () => {
-    setIsRefreshing(true);
-    await fetchArticles(false);
-    setIsRefreshing(false);
-  }
+  const [userID] = useState("1765193");
 
-  const handleLoadMore = async (event) => {
-    const { layoutMeasurement, contentSize, contentOffset } = event.nativeEvent;
-    const isAtBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height;
-
-    if (isAtBottom) {
-      await fetchArticles(true);
-    }
-  }
-
-  const fetchArticles = async (loadMore) => {
+  const fetchData = async (loadMore) => {
     try {
-      const predictions = await fetchPredictions(userID, 10);
-      if (loadMore) {
-        setRecommendedArticles([...recommendedArticles, ...predictions.recommended_items]);
-      } else {
-        setRecommendedArticles(predictions.recommended_items);
+      let data;
+      switch (subview) {
+        case 1:
+          data = await fetchPredictions(userID, 10);
+          break;
+        case 3:
+          data = await fetchAllArticles();
+          break;
+        default:
+          break;
+      };
 
-        // Set loading to false after fetching articles, but wait at least 2000ms
-        setTimeout(() => {
-          setLoading(false);
-        }, 2000);
-      } catch (error) {
-        console.error('Error fetching articles:', error);
+      if (loadMore) {
+        setArticles(prevArticles => [...prevArticles, ...data.news]);
+      } else {
+        setArticles(data.news);
       }
     } catch (error) {
       console.error('Error fetching articles:', error);
     }
   };
 
-  const onPressedSubView = (id) => {
-    switch (id) {
-      case 1:
-        // Handle case 1
-        console.log("Case 1 is triggered");
-        break;
-      case 2:
-        // Handle case 2
-        console.log("Case 2 is triggered");
-        break;
-      case 3:
-        // Handle case 3
-        console.log("Case 3 is triggered");
-        break;
-      default:
-        // Handle default case
-        console.log("Default case is triggered");
-        break;
-    }
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchData(false);
+    setIsRefreshing(false);
   };
 
-  // If loading, display the splash screen
+  const handleLoadMore = async (event) => {
+    const { layoutMeasurement, contentSize, contentOffset } = event.nativeEvent;
+    const isAtBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height;
+
+    if (isAtBottom) {
+      await fetchData(true);
+    }
+  }
+
+  const onPressedSubView = (id) => {
+    setSubview(id);
+  };
+
+  useEffect(() => {
+    fetchData(false);
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+  }, [subview]);
+  
   if (loading) {
     return <SplashScreen />;
   }
-  
-  useEffect(() => {
-    fetchArticles(false);
-  }, []);
 
-  if (recommendedArticles.length === 0) {
+  if (articles.length === 0) {
 		return (
 			<Error errorText={'Aktiklerne blev ikke fundet'} action={ERRORACTIONS.REFRESH} />
 		);
@@ -105,7 +95,7 @@ export default function NewsFeedScreen() {
           />
         }
       >
-        {recommendedArticles.map((article) => (
+        {articles.map((article) => (
           <NewsCard key={article.article_id} article={article} />
         ))}
       </ScrollView>
