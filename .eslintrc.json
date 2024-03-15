@@ -16,5 +16,6 @@
         "react"
     ],
     "rules": {
+        "indent": ["error", "tab"]
     }
 }

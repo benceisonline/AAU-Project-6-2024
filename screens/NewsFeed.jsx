@@ -1,34 +1,54 @@
 import React, { useState, useEffect } from 'react'; 
-import { StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { StyleSheet, SafeAreaView, ScrollView, RefreshControl } from 'react-native';
 import { layout } from '../GlobalStyles';
 import NewsCard from '../components/NewsCard';
 import NewsHeader from '../components/NewsHeader';
 import Error from '../components/Error';
-import fetchPredictions from '../utils/AxiosRequest'; // Import fetchData function from AxiosRequest file
+import fetchPredictions from '../utils/AxiosRequest';
+import ERRORACTIONS from '../constants/ErrorActions';
 import SplashScreen from '../components/SplashScreen'; // Import SplashScreen component
+
 
 export default function NewsFeedScreen() {
   const [recommendedArticles, setRecommendedArticles] = useState([]);
   const [loading, setLoading] = useState(true); // Add loading state
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const userID = "1765193"; 
+  
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchArticles(false);
+    setIsRefreshing(false);
+  }
 
-  useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        const userID = "1765193"; 
-        const predictions = await fetchPredictions(userID);
+  const handleLoadMore = async (event) => {
+    const { layoutMeasurement, contentSize, contentOffset } = event.nativeEvent;
+    const isAtBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height;
+
+    if (isAtBottom) {
+      await fetchArticles(true);
+    }
+  }
+
+  const fetchArticles = async (loadMore) => {
+    try {
+      const predictions = await fetchPredictions(userID, 10);
+      if (loadMore) {
+        setRecommendedArticles([...recommendedArticles, ...predictions.recommended_items]);
+      } else {
         setRecommendedArticles(predictions.recommended_items);
 
-        // Set loading to false after fetching articles, but wait at least 1500ms
+        // Set loading to false after fetching articles, but wait at least 2000ms
         setTimeout(() => {
           setLoading(false);
         }, 2000);
       } catch (error) {
         console.error('Error fetching articles:', error);
       }
-    };
-
-    fetchArticles();
-  }, []);
+    } catch (error) {
+      console.error('Error fetching articles:', error);
+    }
+  };
 
   const onPressedSubView = (id) => {
     switch (id) {
@@ -55,11 +75,16 @@ export default function NewsFeedScreen() {
   if (loading) {
     return <SplashScreen />;
   }
+  
+  useEffect(() => {
+    fetchArticles(false);
+  }, []);
 
-  // If no articles found, display error message
   if (recommendedArticles.length === 0) {
-    return <Error errorText={'Aktiklerne blev ikke fundet'} />;
-  }
+		return (
+			<Error errorText={'Aktiklerne blev ikke fundet'} action={ERRORACTIONS.REFRESH} />
+		);
+	}
 
   return (
     <SafeAreaView style={ styles.container }>
@@ -68,8 +93,19 @@ export default function NewsFeedScreen() {
         style={ styles.feed } 
         showsVerticalScrollIndicator={false} 
         showsHorizontalScrollIndicator={false}
+        onScroll={handleLoadMore}
+        scrollEventThrottle={200}
+        refreshControl={
+          <RefreshControl
+              color={'#E3141D'}
+              tintColor={'#E3141D'}
+              title='Opdaterer...'
+              refreshing={isRefreshing}
+              onRefresh={handleRefresh}
+          />
+        }
       >
-        {recommendedArticles.map((article, index) => (
+        {recommendedArticles.map((article) => (
           <NewsCard key={article.article_id} article={article} />
         ))}
       </ScrollView>
