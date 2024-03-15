@@ -6,6 +6,7 @@ import { globalStyles, layout } from '../GlobalStyles';
 
 import Error from '../components/Error';
 import PropTypes from 'prop-types';
+import PlusIndicator from '../components/PlusIndicator';
 
 const { height } = Dimensions.get('window');
 
@@ -22,34 +23,36 @@ export default function Article({ route }) {
 
 	return (
 		<SafeAreaView style={styles.container}>
+			<View style={styles.header}>
+				<PlusIndicator isActive={true} />
+				<TouchableOpacity style={styles.headerMenu} onPress={() => navigation.goBack()}>
+						<Ionicons name="arrow-back" size={height * 0.04} color="black" />
+						<Text style={globalStyles.headline}>Artikler</Text>
+				</TouchableOpacity>
+			</View>
 			<ScrollView 
 				style={styles.scrollView}
 				showsVerticalScrollIndicator={false} 
 				showsHorizontalScrollIndicator={false}
 			>
-					<TouchableOpacity style={styles.header} onPress={() => navigation.goBack()}>
-							<Ionicons name="arrow-back" size={height * 0.04} color="black" />
-							<Text style={globalStyles.headline}>Artikler</Text>
-					</TouchableOpacity>
+				<Image source={require('../assets/cool_building.jpg')} style={styles.cover} />
 
-					<Image source={require('../assets/cool_building.jpg')} style={styles.cover} />
+				<View style={styles.content}>
+					<Text style={styles.articleTitle}>
+						{ article.title }
+					</Text>
 
-					<View style={styles.content}>
-							<Text style={styles.articleTitle}>
-								{ article.title }
-							</Text>
-
-							<View style={styles.authorContainer}>
-									<Text>Af </Text>
-									<Text style={styles.authorName}>
-										{ journalistName }
-									</Text>
-							</View>
-
-							<Text style={globalStyles.bodyText}>
-								{ article.body }
+					<View style={styles.authorContainer}>
+							<Text>Af </Text>
+							<Text style={styles.authorName}>
+								{ journalistName }
 							</Text>
 					</View>
+
+					<Text style={globalStyles.bodyText}>
+						{ article.body }
+					</Text>
+				</View>
 			</ScrollView>
 		</SafeAreaView>
 	);
@@ -73,11 +76,9 @@ const styles = StyleSheet.create({
       flex: 1,
     },
     header: {
-			alignItems: 'center',
-			paddingHorizontal: '4%',
-			paddingTop: '4.5%',
-			paddingBottom: '11%',
-			...layout.flexRow,
+        alignItems: 'center',
+        paddingHorizontal: '4%',
+        ...layout.flexRow,
     },
     scrollView: {
         marginTop: '4.5%',
@@ -101,5 +102,10 @@ const styles = StyleSheet.create({
     },
     authorName: {
 			textDecorationLine: 'underline',
+    },
+	headerMenu: {
+        ...layout.flexRow,
+        alignItems: 'center',
+        top: 0,
     }
 });
