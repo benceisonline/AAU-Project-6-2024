@@ -3,6 +3,7 @@ import { Image, View, Text, StyleSheet, SafeAreaView, ScrollView, Dimensions, To
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { globalStyles, layout } from '../GlobalStyles';
+
 import Error from '../components/Error';
 import PropTypes from 'prop-types';
 

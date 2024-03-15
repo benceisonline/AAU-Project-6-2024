@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, Image, Dimensions, TouchableOpacity } from 'react-native';
 import { layout, globalStyles } from '../GlobalStyles';
 
+import PlusIndicator from '../components/PlusIndicator';
+
 const SubViewTitles = [
   {
     id: 1,
@@ -46,13 +48,13 @@ export default function NewsHeader({ onPressedSubView }) {
 
   return(
     <View style={ styles.headerContainer } >
+      <PlusIndicator isActive={true} />
       <View style={ styles.headlineContainer } >
         <Image source={require(`../assets/eb_logo.png`)} resizeMode='contain' style={{ width: logoHeight, height: logoHeight }} />
         <Text style={ styles.headline } >
           Nyheder
         </Text>
       </View>
-
       <View style={ styles.headlineContainer } >
         <SubViews />
       </View>
@@ -84,5 +86,5 @@ const styles = StyleSheet.create({
   activeSubView: {
     color: '#000',
     textDecorationLine: 'underline',
-  },
+  }
 });
