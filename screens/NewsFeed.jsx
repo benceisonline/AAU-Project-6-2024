@@ -6,9 +6,12 @@ import NewsHeader from '../components/NewsHeader';
 import Error from '../components/Error';
 import fetchPredictions from '../utils/AxiosRequest';
 import ERRORACTIONS from '../constants/ErrorActions';
+import SplashScreen from '../components/SplashScreen'; // Import SplashScreen component
+
 
 export default function NewsFeedScreen() {
   const [recommendedArticles, setRecommendedArticles] = useState([]);
+  const [loading, setLoading] = useState(true); // Add loading state
   const [isRefreshing, setIsRefreshing] = useState(false);
   const userID = "1765193"; 
   
@@ -34,6 +37,13 @@ export default function NewsFeedScreen() {
         setRecommendedArticles([...recommendedArticles, ...predictions.recommended_items]);
       } else {
         setRecommendedArticles(predictions.recommended_items);
+
+        // Set loading to false after fetching articles, but wait at least 2000ms
+        setTimeout(() => {
+          setLoading(false);
+        }, 2000);
+      } catch (error) {
+        console.error('Error fetching articles:', error);
       }
     } catch (error) {
       console.error('Error fetching articles:', error);
@@ -61,6 +71,11 @@ export default function NewsFeedScreen() {
     }
   };
 
+  // If loading, display the splash screen
+  if (loading) {
+    return <SplashScreen />;
+  }
+  
   useEffect(() => {
     fetchArticles(false);
   }, []);
@@ -72,7 +87,7 @@ export default function NewsFeedScreen() {
 	}
 
   return (
-    <SafeAreaView style={ styles.container } >
+    <SafeAreaView style={ styles.container }>
       <NewsHeader onPressedSubView={onPressedSubView} />
       <ScrollView 
         style={ styles.feed } 
