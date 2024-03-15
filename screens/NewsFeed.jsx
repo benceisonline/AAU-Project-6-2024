@@ -5,9 +5,11 @@ import NewsCard from '../components/NewsCard';
 import NewsHeader from '../components/NewsHeader';
 import Error from '../components/Error';
 import fetchPredictions from '../utils/AxiosRequest'; // Import fetchData function from AxiosRequest file
+import SplashScreen from '../components/SplashScreen'; // Import SplashScreen component
 
 export default function NewsFeedScreen() {
   const [recommendedArticles, setRecommendedArticles] = useState([]);
+  const [loading, setLoading] = useState(true); // Add loading state
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -15,6 +17,11 @@ export default function NewsFeedScreen() {
         const userID = "1765193"; 
         const predictions = await fetchPredictions(userID);
         setRecommendedArticles(predictions.recommended_items);
+
+        // Set loading to false after fetching articles, but wait at least 1500ms
+        setTimeout(() => {
+          setLoading(false);
+        }, 2000);
       } catch (error) {
         console.error('Error fetching articles:', error);
       }
@@ -44,14 +51,18 @@ export default function NewsFeedScreen() {
     }
   };
 
+  // If loading, display the splash screen
+  if (loading) {
+    return <SplashScreen />;
+  }
+
+  // If no articles found, display error message
   if (recommendedArticles.length === 0) {
-		return(
-			<Error errorText={'Aktiklerne blev ikke fundet'} />
-		);
-	}
+    return <Error errorText={'Aktiklerne blev ikke fundet'} />;
+  }
 
   return (
-    <SafeAreaView style={ styles.container } >
+    <SafeAreaView style={ styles.container }>
       <NewsHeader onPressedSubView={onPressedSubView} />
       <ScrollView 
         style={ styles.feed } 
