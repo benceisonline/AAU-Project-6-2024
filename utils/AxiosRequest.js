@@ -1,6 +1,6 @@
 const axios = require('axios').default;
 
-const localUrl = '172.20.10.4';
+const localUrl = '192.168.1.31';
 const apiUrl = `http://${localUrl}:8000`;
 
 const fetchPredictions = async (userId, noOfRecommendations) => {
