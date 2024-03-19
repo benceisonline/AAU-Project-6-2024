@@ -81,48 +81,51 @@ NewsCard.propTypes = {
 };
 
 const styles = StyleSheet.create({
-	container: {
-		backgroundColor: '#F4F4F4',
-		marginBottom: '5%',
-		padding: '5% 5% 5% 5%',
-		borderRadius: 7.5,
-		...layout.flexColumn
-	},
-	thumbnail: {
-		width: '100%', 
-		borderRadius: 2.5, 
-		marginVertical: '4%'
-	},
-	timeStampContainer: {
-		alignItems: 'flex-end',
-		justifyContent: 'flex-end',
-		...layout.flexColumn
-	},
-	newsCategory: {
-		textAlign: 'center', 
-		paddingVertical: '0.5%', 
-		paddingHorizontal: '2.5%',
-		...globalStyles.newsCategory
-	},
-	newsCategoryContainer: {
-		alignSelf: 'flex-start', 
-		backgroundColor: '#434843', 
-		borderRadius: 2.5, 
-		marginTop: '2.5%'
-	},
-	journalistContainer: {
-		alignItems: 'center',
-		...layout.flexRow
-	},
-	journalistImage: {
-		borderRadius: 50, 
-		marginRight: '7.5%'
-	},
-	headerContainer: {
-		justifyContent: 'space-between',
-		...layout.flexRow
-	},
-	breakingContainer: {
-		backgroundColor: 'yellow',
-	}
+  container: {
+    backgroundColor: '#F4F4F4',
+    marginBottom: '5%',
+    padding: '5% 5% 5% 5%',
+    borderRadius: 7.5,
+    ...layout.flexColumn
+  },
+  thumbnail: {
+    width: '100%', 
+    borderRadius: 2.5, 
+    marginVertical: '4%'
+  },
+  timeStampContainer: {
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    ...layout.flexColumn
+  },
+  newsCategory: {
+    textAlign: 'center', 
+    paddingVertical: '0.5%', 
+    paddingHorizontal: '2.5%',
+    ...globalStyles.newsCategory,
+    fontFamily: 'WorkSans-Regular',
+    fontSize: 10,
+    fontWeight: 400,
+  },
+  newsCategoryContainer: {
+    alignSelf: 'flex-start', 
+    backgroundColor: '#434843', 
+    borderRadius: 2.5, 
+    marginTop: '2.5%'
+  },
+  journalistContainer: {
+    alignItems: 'center',
+    ...layout.flexRow
+  },
+  journalistImage: {
+    borderRadius: 50, 
+    marginRight: '7.5%'
+  },
+  headerContainer: {
+    justifyContent: 'space-between',
+    ...layout.flexRow
+  },
+  breakingContainer: {
+    backgroundColor: 'yellow',
+  }
 });
