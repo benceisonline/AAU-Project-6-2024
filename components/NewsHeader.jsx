@@ -86,5 +86,6 @@ const styles = StyleSheet.create({
   activeSubView: {
     color: '#000',
     textDecorationLine: 'underline',
+    fontFamily: 'InterTight-Bold',
   }
 });
