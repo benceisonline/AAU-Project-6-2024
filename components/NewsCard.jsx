@@ -7,64 +7,64 @@ import PropTypes from 'prop-types';
 const { height } = Dimensions.get('window');
 
 export default function NewsCard({ article }) {
-  const journalistName = "Lasse Claes";
-  const navigation = useNavigation();
+	const journalistName = "Lasse Claes";
+	const navigation = useNavigation();
 
-  const thumbnailHeight = height * 0.2;
-  const journalistImageSize = height * 0.05;
+	const thumbnailHeight = height * 0.2;
+	const journalistImageSize = height * 0.05;
 
-  const handleOnPress = () => {
-    navigation.navigate('Article', { article: article });
-  }
+	const handleOnPress = () => {
+		navigation.navigate('Article', { article: article });
+	}
   
-  // Function to format date
-  const formatPublishedTime = (published_time) => {
-    const date = new Date(published_time);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
+	// Function to format date
+	const formatPublishedTime = (published_time) => {
+		const date = new Date(published_time);
+		return date.toLocaleDateString('en-US', {
+			year: 'numeric',
+			month: 'short',
+			day: 'numeric',
+			hour: '2-digit',
+			minute: '2-digit'
+		});
+	};
 
-  return(
-    <TouchableOpacity style={ styles.container } onPress={handleOnPress} >
-      <View style={ styles.headerContainer } >
+	return(
+		<TouchableOpacity style={ styles.container } onPress={handleOnPress} >
+			<View style={ styles.headerContainer } >
 
-        <View style={ styles.journalistContainer } >
-          <Image source={require(`../assets/lasse_claes.jpg`)} style={[ styles.journalistImage, { width: journalistImageSize, height: journalistImageSize }]} />
+				<View style={ styles.journalistContainer } >
+					<Image source={require(`../assets/lasse_claes.jpg`)} style={[ styles.journalistImage, { width: journalistImageSize, height: journalistImageSize }]} />
 
-          <View style={ layout.flexColumn } >
-            <Text style={ globalStyles.journalistName } >
-              { journalistName }
-            </Text>
+					<View style={ layout.flexColumn } >
+						<Text style={ globalStyles.journalistName } >
+							{ journalistName }
+						</Text>
 
-            <View style={ styles.newsCategoryContainer } >
-              <Text style={ styles.newsCategory } >
-                { article.category_str }
-              </Text>
-            </View>
+						<View style={ styles.newsCategoryContainer } >
+							<Text style={ styles.newsCategory } >
+								{ article.category_str }
+							</Text>
+						</View>
 
-          </View>
-        </View>
+					</View>
+				</View>
 
-        <View style={ styles.timeStampContainer }>
-          <Text style={ globalStyles.timeStamp } >
-            { formatPublishedTime(article.published_time) }
-          </Text>
-        </View>
+				<View style={ styles.timeStampContainer }>
+					<Text style={ globalStyles.timeStamp } >
+						{ formatPublishedTime(article.published_time) }
+					</Text>
+				</View>
 
-      </View>
+			</View>
 
-      <Image source={require(`../assets/thumbnail_1.png`)} resizeMode='cover' style={[ styles.thumbnail, { height: thumbnailHeight }]} />
+			<Image source={{ uri: article.image_url }} resizeMode='cover' style={[ styles.thumbnail, { height: thumbnailHeight }]} />
 
-      <Text style={ globalStyles.newsTitle }>
-        { article.title }
-      </Text>
-    </TouchableOpacity>
-  );
+			<Text style={ globalStyles.newsTitle }>
+				{ article.title }
+			</Text>
+		</TouchableOpacity>
+	);
 }
 
 NewsCard.propTypes = {
