@@ -21,10 +21,8 @@ export default function Article({ route }) {
 		);
 	}
 
-    // Splitting the body text into paragraphs
-    const paragraphs = article.body.split('\n');
+	const paragraphs = article.body.split('\n');
 
-    // Logging each split paragraph
     console.log('Raw article text:', paragraphs);
 
 	const renderedParagraphs = paragraphs.map((paragraph, index) => (
@@ -33,7 +31,6 @@ export default function Article({ route }) {
             {'\n'} {/* Adding an extra newline character at the end of each paragraph */}
         </Text>
     ));
-
 
 	return (
 		<SafeAreaView style={styles.container}>
