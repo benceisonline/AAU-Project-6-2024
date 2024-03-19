@@ -21,6 +21,20 @@ export default function Article({ route }) {
 		);
 	}
 
+    // Splitting the body text into paragraphs
+    const paragraphs = article.body.split('\n');
+
+    // Logging each split paragraph
+    console.log('Raw article text:', paragraphs);
+
+	const renderedParagraphs = paragraphs.map((paragraph, index) => (
+        <Text key={index} style={globalStyles.bodyText}>
+            {paragraph}
+            {'\n'} {/* Adding an extra newline character at the end of each paragraph */}
+        </Text>
+    ));
+
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<View style={styles.header}>
@@ -49,9 +63,8 @@ export default function Article({ route }) {
 							</Text>
 					</View>
 
-					<Text style={globalStyles.bodyText}>
-						{ article.body }
-					</Text>
+                    {renderedParagraphs}
+
 				</View>
 			</ScrollView>
 		</SafeAreaView>
