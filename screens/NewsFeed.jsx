@@ -12,7 +12,7 @@ export default function NewsFeedScreen() {
 	const [recommendedArticles, setRecommendedArticles] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [isRefreshing, setIsRefreshing] = useState(false);
-	const userID = "1765193"; 
+	const userID = "1812344"; 
 
 	const handleRefresh = async () => {
 		setIsRefreshing(true);
