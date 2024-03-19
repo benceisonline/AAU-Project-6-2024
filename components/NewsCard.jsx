@@ -102,7 +102,10 @@ const styles = StyleSheet.create({
     textAlign: 'center', 
     paddingVertical: '0.5%', 
     paddingHorizontal: '2.5%',
-    ...globalStyles.newsCategory
+    ...globalStyles.newsCategory,
+    fontFamily: 'WorkSans-Regular',
+    fontSize: 10,
+    fontWeight: 400,
   },
   newsCategoryContainer: {
     alignSelf: 'flex-start', 
