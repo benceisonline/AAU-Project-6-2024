@@ -1,7 +1,8 @@
 import React from 'react'; 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { StatusBar } from 'react-native';
+import { StatusBar, Text } from 'react-native';
+import { useFonts } from "expo-font";
 
 // News Screens
 import NewsFeedScreen from './screens/NewsFeed';
@@ -28,6 +29,19 @@ function NewsStackScreens() {
 }
 
 export default function App() {
+	const [fontsLoaded] = useFonts({
+		"WorkSans-Regular": require("./assets/fonts/WorkSans-Regular.ttf"),
+		"WorkSans-Medium": require("./assets/fonts/WorkSans-Medium.ttf"),
+		"Karla-Regular": require("./assets/fonts/Karla-Regular.ttf"),
+		"Karla-Medium": require("./assets/fonts/Karla-Medium.ttf"),
+		"InterTight-SemiBold": require("./assets/fonts/InterTight-SemiBold.ttf"),
+		"InterTight-Bold": require("./assets/fonts/InterTight-Bold.ttf"),
+
+
+	});
+	if (!fontsLoaded) {
+	return <Text>Loading...</Text>;
+	}
 	return (
 		<NavigationContainer>
 			<StatusBar barStyle="dark-content" backgroundColor="white" />

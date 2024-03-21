@@ -17,17 +17,28 @@ export default function Article({ route }) {
 
 	if (!article) {
 		return(
-			<Error errorText={'Aktiklen blev ikke fundet'} action={ERRORACTIONS.BACK}/>
+			<Error errorText={'Artiklen blev ikke fundet'} action={ERRORACTIONS.BACK}/>
 		);
 	}
+
+	const paragraphs = article.body.split('\n');
+
+    console.log('Raw article text:', paragraphs);
+
+	const renderedParagraphs = paragraphs.map((paragraph, index) => (
+        <Text key={index} style={globalStyles.bodyText}>
+            {paragraph}
+            {'\n'} {/* Adding an extra newline character at the end of each paragraph */}
+        </Text>
+    ));
 
 	return (
 		<SafeAreaView style={styles.container}>
 			<View style={styles.header}>
 				<PlusIndicator isActive={true} />
 				<TouchableOpacity style={styles.headerMenu} onPress={() => navigation.goBack()}>
-						<Ionicons name="arrow-back" size={height * 0.04} color="black" />
-						<Text style={globalStyles.headline}>Artikler</Text>
+					<Ionicons name="arrow-back" size={height * 0.04} color="black" />
+					<Text style={globalStyles.headline}>Artikler</Text>
 				</TouchableOpacity>
 			</View>
 			<ScrollView 
@@ -35,7 +46,7 @@ export default function Article({ route }) {
 				showsVerticalScrollIndicator={false} 
 				showsHorizontalScrollIndicator={false}
 			>
-				<Image source={require('../assets/cool_building.jpg')} style={styles.cover} />
+				<Image source={{ uri: article.image_url }} style={styles.cover} />
 
 				<View style={styles.content}>
 					<Text style={styles.articleTitle}>
@@ -43,15 +54,14 @@ export default function Article({ route }) {
 					</Text>
 
 					<View style={styles.authorContainer}>
-							<Text>Af </Text>
-							<Text style={styles.authorName}>
-								{ journalistName }
-							</Text>
+						<Text>Af </Text>
+						<Text style={styles.authorName}>
+							{ journalistName }
+						</Text>
 					</View>
 
-					<Text style={globalStyles.bodyText}>
-						{ article.body }
-					</Text>
+                    {renderedParagraphs}
+
 				</View>
 			</ScrollView>
 		</SafeAreaView>
@@ -72,40 +82,40 @@ Article.propTypes = {
 };
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-    },
-    header: {
-        alignItems: 'center',
-        paddingHorizontal: '4%',
-        ...layout.flexRow,
-    },
-    scrollView: {
-        marginTop: '4.5%',
-    },
-    cover: {
-			width: '100%',
-			height: height * 0.23,
-			resizeMode: 'cover', 
-    },
-    content: {
-			paddingHorizontal: '4%',
-    },
-    articleTitle: {
-			paddingVertical: '4.5%',
-			...globalStyles.articleTitle
-    },
-    authorContainer: {
-			alignItems: 'center',
-			paddingBottom: '6.5%',
-			...layout.flexRow,
-    },
-    authorName: {
-			textDecorationLine: 'underline',
-    },
+	container: {
+		flex: 1,
+	},
+	header: {
+		alignItems: 'center',
+		paddingHorizontal: '4%',
+		...layout.flexRow,
+	},
+	scrollView: {
+		marginTop: '4.5%',
+	},
+	cover: {
+		width: '100%',
+		height: height * 0.23,
+		resizeMode: 'cover', 
+	},
+	content: {
+		paddingHorizontal: '4%',
+	},
+	articleTitle: {
+		paddingVertical: '4.5%',
+		...globalStyles.articleTitle
+	},
+	authorContainer: {
+		alignItems: 'center',
+		paddingBottom: '6.5%',
+		...layout.flexRow,
+	},
+	authorName: {
+		textDecorationLine: 'underline',
+	},
 	headerMenu: {
-        ...layout.flexRow,
-        alignItems: 'center',
-        top: 0,
-    }
+		...layout.flexRow,
+		alignItems: 'center',
+		top: 0,
+	}
 });

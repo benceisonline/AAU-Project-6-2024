@@ -10,12 +10,6 @@ export const globalStyles = StyleSheet.create({
 	headerBackground: {
 		backgroundColor: '#FCFCFC',
 	},
-	topic: {
-		backgroundColor: '#158A19',
-		fontFamily: 'Work Sans',
-		fontSize: 8,
-		fontWeight: 400
-	},
 	newsBackground: {
 		backgroundColor: '#FEFEFE',
 	},
@@ -27,19 +21,20 @@ export const globalStyles = StyleSheet.create({
 	},
 	timeStamp: {
 		color: '#7B7676',
-		// fontFamily: 'Work Sans',
+		fontFamily: 'WorkSans-Regular',
 		fontWeight: 400
 	},
 	journalistName: {
 		color: '#020202',
-		// fontFamily: 'Work Sans',
-		fontSize: 16,
-		fontWeight: 500,
-	},
+		fontFamily: 'WorkSans-Medium',
+		fontSize: 14,
+		},
 	newsTitle: {
 		color: '#111010',
+		fontFamily: 'Karla-Medium',
 		fontSize: 18,
 		fontWeight: 500,
+		letterSpacing: -0.5,
 	},
 	newsCategory: {
 		fontSize: 10, 
@@ -48,12 +43,14 @@ export const globalStyles = StyleSheet.create({
 		textTransform: 'capitalize'
 	},
 	headline: {
+		fontFamily: 'InterTight-SemiBold',
 		fontSize: 32, 
 		fontWeight: 'bold', 
 		color: '#000'
 	},
 	subView: {
-		fontSize: 18, 
+		fontFamily: 'InterTight-SemiBold',
+		fontSize: 20, 
 		fontWeight: 500, 
 		color: '#7A7373'
 	},
@@ -62,7 +59,6 @@ export const globalStyles = StyleSheet.create({
 	},
 	articleTitle: {
 		fontSize: 24,
-		fontWeight: 'bold',
 	},
 });
 
