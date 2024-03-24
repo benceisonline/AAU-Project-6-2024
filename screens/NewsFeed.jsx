@@ -8,13 +8,12 @@ import { fetchPredictions, fetchAllArticles } from '../utils/AxiosRequest';
 import ERRORACTIONS from '../constants/ErrorActions';
 import SplashScreen from '../components/SplashScreen'; 
 
-
 export default function NewsFeedScreen() {
   const [subview, setSubview] = useState(1);
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [userID] = useState("1765193");
+  const userID = "1812344"; 
 
   const fetchData = async (loadMore) => {
     try {
@@ -37,8 +36,15 @@ export default function NewsFeedScreen() {
       } else {
         setArticles(data.news);
       }
+      
+      // Set loading to false after fetching articles, but wait at least 2000ms
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000);
     } catch (error) {
       console.error('Error fetching articles:', error);
+      // Handle error appropriately, e.g., set loading to false
+			setLoading(false);
     }
   };
 
@@ -48,9 +54,9 @@ export default function NewsFeedScreen() {
     setIsRefreshing(false);
   };
 
-  const handleLoadMore = async (event) => {
-    const { layoutMeasurement, contentSize, contentOffset } = event.nativeEvent;
-    const isAtBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height;
+	const handleLoadMore = async (event) => {
+		const { layoutMeasurement, contentSize, contentOffset } = event.nativeEvent;
+		const isAtBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height;
 
     if (isAtBottom) {
       await fetchData(true);
@@ -74,7 +80,7 @@ export default function NewsFeedScreen() {
 
   if (!articles || articles.length === 0) {
 		return (
-			<Error errorText={'Aktiklerne blev ikke fundet'} action={ERRORACTIONS.REFRESH} />
+			<Error errorText={'Artiklerne blev ikke fundet.'} action={ERRORACTIONS.REFRESH} />
 		);
 	}
 
@@ -106,13 +112,13 @@ export default function NewsFeedScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    height: '100%',
-    width: '100%',
-    backgroundColor: '#FCFCFC',
-    ...layout.flexColumn
-  },
-  feed: {
-    marginHorizontal: '2.5%'
-  }
+	container: {
+		flex: 1,
+		backgroundColor: '#FCFCFC',
+		...layout.flexColumn
+	},
+	feed: {
+		flex: 1,
+		marginHorizontal: '2.5%'
+	}
 });
