@@ -20,9 +20,11 @@ export default function NewsFeedScreen() {
     try {
       let data;
       switch (subview) {
+        // Til dig
         case 1:
           data = await fetchPredictions(userID, 10);
           break;
+        // Alle nyheder
         case 3:
           data = await fetchAllArticles();
           break;
@@ -70,7 +72,7 @@ export default function NewsFeedScreen() {
     return <SplashScreen />;
   }
 
-  if (articles.length === 0) {
+  if (!articles || articles.length === 0) {
 		return (
 			<Error errorText={'Aktiklerne blev ikke fundet'} action={ERRORACTIONS.REFRESH} />
 		);
