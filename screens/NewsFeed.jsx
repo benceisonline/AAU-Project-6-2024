@@ -1,78 +1,110 @@
-import React from 'react'; 
-import { StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react'; 
+import { StyleSheet, SafeAreaView, ScrollView, RefreshControl } from 'react-native';
+import { layout } from '../GlobalStyles';
 import NewsCard from '../components/NewsCard';
 import NewsHeader from '../components/NewsHeader';
-import { layout } from '../GlobalStyles';
-
-// mock data
-const newsData = [
-  {
-    journalist: { name: 'Lasse Claes', imageID: 'lasse_claes.jpg' },
-    news: {
-      title: 'Opinion: Han ligner én, der stadig har nøglerne til borgen.',
-      category: 'Opinion',
-      timestamp: '34m'
-    }
-  },
-  {
-    journalist: { name: 'Lasse Claes', imageID: 'lasse_claes.jpg' },
-    news: {
-      title: 'Opinion: Han ligner én, der stadig har nøglerne til borgen.',
-      category: 'Opinion',
-      timestamp: '34m'
-    }
-  },
-  {
-    journalist: { name: 'Lasse Claes', imageID: 'lasse_claes.jpg' },
-    news: {
-      title: 'Opinion: Han ligner én, der stadig har nøglerne til borgen.',
-      category: 'Opinion',
-      timestamp: '34m'
-    }
-  },
-  {
-    journalist: { name: 'Lasse Claes', imageID: 'lasse_claes.jpg' },
-    news: {
-      title: 'Opinion: Han ligner én, der stadig har nøglerne til borgen.',
-      category: 'Opinion',
-      timestamp: '34m'
-    }
-  },
-];
+import Error from '../components/Error';
+import { fetchPredictions, fetchAllArticles } from '../utils/AxiosRequest';
+import ERRORACTIONS from '../constants/ErrorActions';
+import SplashScreen from '../components/SplashScreen'; 
 
 export default function NewsFeedScreen() {
-  
-  const onPressedSubView = (id) => {
-    switch (id) {
-      case 1:
-        // Handle case 1
-        console.log("Case 1 is triggered");
-        break;
-      case 2:
-        // Handle case 2
-        console.log("Case 2 is triggered");
-        break;
-      case 3:
-        // Handle case 3
-        console.log("Case 3 is triggered");
-        break;
-      default:
-        // Handle default case
-        console.log("Default case is triggered");
-        break;
+  const [subview, setSubview] = useState(1);
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const userID = "1812344"; 
+
+  const fetchData = async (loadMore) => {
+    try {
+      let data;
+      switch (subview) {
+        // Til dig
+        case 1:
+          data = await fetchPredictions(userID, 10);
+          break;
+        // Alle nyheder
+        case 3:
+          data = await fetchAllArticles();
+          break;
+        default:
+          break;
+      };
+
+      if (loadMore) {
+        setArticles(prevArticles => [...prevArticles, ...data.news]);
+      } else {
+        setArticles(data.news);
+      }
+      
+      // Set loading to false after fetching articles, but wait at least 2000ms
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000);
+    } catch (error) {
+      console.error('Error fetching articles:', error);
+      // Handle error appropriately, e.g., set loading to false
+			setLoading(false);
     }
   };
 
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchData(false);
+    setIsRefreshing(false);
+  };
+
+	const handleLoadMore = async (event) => {
+		const { layoutMeasurement, contentSize, contentOffset } = event.nativeEvent;
+		const isAtBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height;
+
+    if (isAtBottom) {
+      await fetchData(true);
+    }
+  }
+
+  const onPressedSubView = (id) => {
+    setSubview(id);
+  };
+
+  useEffect(() => {
+    fetchData(false);
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+  }, [subview]);
+  
+  if (loading) {
+    return <SplashScreen />;
+  }
+
+  if (!articles || articles.length === 0) {
+		return (
+			<Error errorText={'Artiklerne blev ikke fundet.'} action={ERRORACTIONS.REFRESH} />
+		);
+	}
+
   return (
-    <SafeAreaView style={ styles.container } >
+    <SafeAreaView style={ styles.container }>
       <NewsHeader onPressedSubView={onPressedSubView} />
       <ScrollView 
         style={ styles.feed } 
         showsVerticalScrollIndicator={false} 
         showsHorizontalScrollIndicator={false}
+        onScroll={handleLoadMore}
+        scrollEventThrottle={200}
+        refreshControl={
+          <RefreshControl
+              color={'#E3141D'}
+              tintColor={'#E3141D'}
+              title='Opdaterer...'
+              refreshing={isRefreshing}
+              onRefresh={handleRefresh}
+          />
+        }
       >
-        {newsData.map((item, index) => (
-          <NewsCard key={index} journalist={item.journalist} news={item.news} />
+        {articles.map((article) => (
+          <NewsCard key={article.article_id} article={article} />
         ))}
       </ScrollView>
     </SafeAreaView>
@@ -80,13 +112,13 @@ export default function NewsFeedScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    height: '100%',
-    width: '100%',
-    backgroundColor: '#FCFCFC',
-    ...layout.flexColumn
-  },
-  feed: {
-    marginHorizontal: '2.5%'
-  }
+	container: {
+		flex: 1,
+		backgroundColor: '#FCFCFC',
+		...layout.flexColumn
+	},
+	feed: {
+		flex: 1,
+		marginHorizontal: '2.5%'
+	}
 });

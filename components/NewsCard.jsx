@@ -1,55 +1,88 @@
 import React from 'react'; 
-import { StyleSheet, View, Text, Image, Dimensions } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { StyleSheet, View, Text, Image, Dimensions, TouchableOpacity } from 'react-native';
 import { layout, globalStyles } from '../GlobalStyles';
+import PropTypes from 'prop-types';
 
-export default function NewsCard({ journalist, news }) {
-  const { height } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 
-  const thumbnailHeight = height * 0.2;
-  const journalistImageSize = height * 0.05;
+export default function NewsCard({ article }) {
+	const journalistName = "Lasse Claes";
+	const navigation = useNavigation();
+
+	const thumbnailHeight = height * 0.2;
+	const journalistImageSize = height * 0.05;
+
+	const handleOnPress = () => {
+		navigation.navigate('Article', { article: article });
+	}
   
-  return(
-    <View style={ styles.container } >
+	// Function to format date
+	const formatPublishedTime = (published_time) => {
+		const date = new Date(published_time);
+		return date.toLocaleDateString('en-US', {
+			year: 'numeric',
+			month: 'short',
+			day: 'numeric',
+			hour: '2-digit',
+			minute: '2-digit'
+		});
+	};
 
-      <View style={ styles.headerContainer } >
+	return(
+		<TouchableOpacity style={ styles.container } onPress={handleOnPress} >
+			<View style={ styles.headerContainer } >
 
-        <View style={ styles.journalistContainer } >
-          <Image source={require(`../assets/lasse_claes.jpg`)} style={[ styles.journalistImage, { width: journalistImageSize, height: journalistImageSize }]} />
+				<View style={ styles.journalistContainer } >
+					<Image source={require(`../assets/lasse_claes.jpg`)} style={[ styles.journalistImage, { width: journalistImageSize, height: journalistImageSize }]} />
 
-          <View style={ layout.flexColumn } >
-            <Text style={ globalStyles.journalistName } >
-              { journalist.name }
-            </Text>
+					<View style={ layout.flexColumn } >
+						<Text style={ globalStyles.journalistName } >
+							{ journalistName }
+						</Text>
 
-            <View style={ styles.newsCategoryContainer } >
-              <Text style={ styles.newsCategory } >
-                { news.category }
-              </Text>
-            </View>
+						<View style={ styles.newsCategoryContainer } >
+							<Text style={ styles.newsCategory } >
+								{ article.category_str }
+							</Text>
+						</View>
 
-          </View>
-        </View>
+					</View>
+				</View>
 
-        <View style={ styles.timeStampContainer }>
-          <Text style={ globalStyles.timeStamp } >
-            { news.timestamp }
-          </Text>
-        </View>
+				<View style={ styles.timeStampContainer }>
+					<Text style={ globalStyles.timeStamp } >
+						{ formatPublishedTime(article.published_time) }
+					</Text>
+				</View>
 
-      </View>
+			</View>
 
-      <Image source={require(`../assets/thumbnail_1.png`)} resizeMode='cover' style={[ styles.thumbnail, { height: thumbnailHeight }]} />
+			<Image source={{ uri: article.image_url }} resizeMode='cover' style={[ styles.thumbnail, { height: thumbnailHeight }]} />
 
-      <Text style={ globalStyles.newsTitle }>
-        { news.title }
-      </Text>
-    </View>
-  );
+			<Text style={ globalStyles.newsTitle }>
+				{ article.title }
+			</Text>
+		</TouchableOpacity>
+	);
 }
+
+NewsCard.propTypes = {
+	news: PropTypes.shape({
+		newsId: PropTypes.number.isRequired,
+		title: PropTypes.string.isRequired,
+		journalistName: PropTypes.string.isRequired,
+		coverImage: PropTypes.string.isRequired,
+		category: PropTypes.string.isRequired,
+		timestamp: PropTypes.string.isRequired,
+		breaking: PropTypes.bool.isRequired,
+		body: PropTypes.string.isRequired,
+	}),
+};
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#FEFEFE',
+    backgroundColor: '#F4F4F4',
     marginBottom: '5%',
     padding: '5% 5% 5% 5%',
     borderRadius: 7.5,
@@ -69,7 +102,10 @@ const styles = StyleSheet.create({
     textAlign: 'center', 
     paddingVertical: '0.5%', 
     paddingHorizontal: '2.5%',
-    ...globalStyles.newsCategory
+    ...globalStyles.newsCategory,
+    fontFamily: 'WorkSans-Regular',
+    fontSize: 10,
+    fontWeight: 400,
   },
   newsCategoryContainer: {
     alignSelf: 'flex-start', 
@@ -88,5 +124,8 @@ const styles = StyleSheet.create({
   headerContainer: {
     justifyContent: 'space-between',
     ...layout.flexRow
+  },
+  breakingContainer: {
+    backgroundColor: 'yellow',
   }
 });
