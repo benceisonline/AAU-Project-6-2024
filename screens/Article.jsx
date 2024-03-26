@@ -23,8 +23,6 @@ export default function Article({ route }) {
 
 	const paragraphs = article.body.split('\n');
 
-    console.log('Raw article text:', paragraphs);
-
 	const renderedParagraphs = paragraphs.map((paragraph, index) => (
         <Text key={index} style={globalStyles.bodyText}>
             {paragraph}
