@@ -23,12 +23,18 @@ export default function Article({ route }) {
 
 	const paragraphs = article.body.split('\n');
 
-	const renderedParagraphs = paragraphs.map((paragraph, index) => (
-        <Text key={index} style={globalStyles.bodyText}>
-            {paragraph}
-            {'\n'} {/* Adding an extra newline character at the end of each paragraph */}
-        </Text>
-    ));
+	const renderedParagraphs = paragraphs.map((paragraph, index) => {
+		if (paragraph.includes('--------- SPLIT ELEMENT ---------')) {
+			return null; // Skip rendering this paragraph
+		}
+
+		return (
+			<Text key={index} style={globalStyles.bodyText}>
+				{paragraph}
+				{'\n'} {/* Adding an extra newline character at the end of each paragraph */}
+			</Text>
+		);
+	});
 
 	return (
 		<SafeAreaView style={styles.container}>
