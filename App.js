@@ -36,8 +36,6 @@ export default function App() {
 		"Karla-Medium": require("./assets/fonts/Karla-Medium.ttf"),
 		"InterTight-SemiBold": require("./assets/fonts/InterTight-SemiBold.ttf"),
 		"InterTight-Bold": require("./assets/fonts/InterTight-Bold.ttf"),
-
-
 	});
 	if (!fontsLoaded) {
 	return <Text>Loading...</Text>;
