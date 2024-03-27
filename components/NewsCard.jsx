@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, View, Text, Image, Dimensions, TouchableOpacity } from 'react-native';
 import { layout, globalStyles } from '../GlobalStyles';
 import PropTypes from 'prop-types';
+import {AddClickedArticle, logAsyncStorageContents} from '../utils/AsyncFunctions';
 
 const { height } = Dimensions.get('window');
 
@@ -13,7 +14,9 @@ export default function NewsCard({ article }) {
 	const thumbnailHeight = height * 0.2;
 	const journalistImageSize = height * 0.05;
 
-	const handleOnPress = () => {
+	const handleOnPress = async () => {
+		AddClickedArticle(article, "1812344");
+		logAsyncStorageContents();
 		navigation.navigate('Article', { article: article });
 	}
   
