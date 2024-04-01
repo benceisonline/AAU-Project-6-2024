@@ -139,9 +139,11 @@ const styles = StyleSheet.create({
 	},
 	horizontalRedLine: {
 		backgroundColor: 'red',
-		alignSelf: 'flex-start',
 		borderRadius: 5,
-		marginBottom: 15,
 		height: 4,
-	},
+		position: 'absolute',
+		bottom: 0,
+		left: 0,
+		right: 0,
+	},	  
 });

@@ -1,6 +1,6 @@
 const axios = require('axios').default;
 
-const localUrl = '172.20.10.13';
+const localUrl = '172.20.10.3';
 const apiUrl = `http://${localUrl}:8000`;
 
 export const fetchPredictions = async (userId, noOfRecommendations) => {
@@ -23,15 +23,15 @@ export const fetchPredictions = async (userId, noOfRecommendations) => {
 };
 
 export const fetchAllArticles = async () => {
-  try {
-    const response = await axios.get(apiUrl + '/all', {
+	try {
+		const response = await axios.get(apiUrl + '/all', {
 			headers: {
 				'Content-Type': 'application/json',
 			},
 		});
 
 		return response.data;
-  } catch (error) {
-    throw error.response ? error.response.data : error.message;
-  }
+	} catch (error) {
+		throw error.response ? error.response.data : error.message;
+	}
 }
