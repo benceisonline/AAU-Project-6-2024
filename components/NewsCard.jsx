@@ -7,22 +7,20 @@ import { getScrollPercentage } from '../utils/AsyncFunctions';
 
 const { height } = Dimensions.get('window');
 
-export default function NewsCard({ article }) {
+export default function NewsCard({ article, userID }) {
 	const journalistName = "Lasse Claes";
 	const navigation = useNavigation();
-  
 	const thumbnailHeight = height * 0.2;
 	const journalistImageSize = height * 0.05;
 	const [scrollPercentage, setScrollPercentage] = useState(0);
-  
+
 	useEffect(() => {
 		async function fetchScrollPercentage() {
-			const userId = "1812344";
-			const percentage = await getScrollPercentage(userId, article.article_id);
+			const percentage = await getScrollPercentage(userID, article.article_id);
 			setScrollPercentage(percentage);
 		}
 		fetchScrollPercentage();
-	}, []);
+	}, [userID]); // Update scroll percentage whenever userID changes
   
 	const handleOnPress = async () => {
 		navigation.navigate('Article', { article: article });
@@ -48,11 +46,11 @@ export default function NewsCard({ article }) {
 	return (
 		<TouchableOpacity style={styles.container} onPress={handleOnPress}>
 			{scrollPercentage > 0 && <View style={[styles.horizontalRedLine, horizontalRedLineStyles]} />}
-	
+    
 			<View style={styles.headerContainer}>
 				<View style={styles.journalistContainer}>
 					<Image source={require(`../assets/lasse_claes.jpg`)} style={[styles.journalistImage, { width: journalistImageSize, height: journalistImageSize }]} />
-	
+    
 					<View style={layout.flexColumn}>
 						<Text style={globalStyles.journalistName}>
 							{journalistName}
@@ -70,7 +68,7 @@ export default function NewsCard({ article }) {
 					</Text>
 				</View>
 			</View>
-	
+    
 			<Image source={{ uri: article.image_url }} resizeMode='cover' style={[styles.thumbnail, { height: thumbnailHeight }]} />
 			<Text style={globalStyles.newsTitle}>{article.title}</Text>
 		</TouchableOpacity>

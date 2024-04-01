@@ -13,7 +13,7 @@ export default function NewsFeedScreen() {
 	const [articles, setArticles] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [isRefreshing, setIsRefreshing] = useState(false);
-	const userID = "1812344"; 
+	const userID = "1812344";
 
 	const fetchData = async (loadMore) => {
 		try {
@@ -36,7 +36,7 @@ export default function NewsFeedScreen() {
 			} else {
 				setArticles(data.news);
 			}
-      
+          
 			// Set loading to false after fetching articles, but wait at least 2000ms
 			setTimeout(() => {
 				setLoading(false);
@@ -104,7 +104,11 @@ export default function NewsFeedScreen() {
 				}
 			>
 				{articles.map((article) => (
-					<NewsCard key={article.article_id} article={article} />
+					<NewsCard 
+						key={article.article_id} 
+						article={article} 
+						userID={userID} // Pass userID as a prop
+					/>
 				))}
 			</ScrollView>
 		</SafeAreaView>
