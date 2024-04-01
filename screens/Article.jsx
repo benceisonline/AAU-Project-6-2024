@@ -1,4 +1,4 @@
-import React from 'react'; 
+import React, { useState, useEffect } from 'react'; 
 import { Image, View, Text, StyleSheet, SafeAreaView, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -7,13 +7,48 @@ import ERRORACTIONS from '../constants/ErrorActions';
 import Error from '../components/Error';
 import PropTypes from 'prop-types';
 import PlusIndicator from '../components/PlusIndicator';
+import { AddClickedArticle, logAsyncStorageContents, getCurrentTimestamp } from '../utils/AsyncFunctions';
 
 const { height } = Dimensions.get('window');
 
 export default function Article({ route }) {
+	const [readTime, setReadTime] = useState(0);
+	const [scrollPercentage, setScrollPercentage] = useState(0);
+	const [scrollHeight, setScrollHeight] = useState(0);
 	const journalistName = "Lasse Claes";
 	const navigation = useNavigation();
 	const { article } = route.params;
+
+	// Update scroll percentage on scroll
+	const handleScroll = (event) => {
+		const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
+		const currentScrollHeight = contentSize.height - layoutMeasurement.height;
+		const currentScrollPercentage = (contentOffset.y / currentScrollHeight) * 100;
+		setScrollHeight(currentScrollHeight);
+		setScrollPercentage(currentScrollPercentage);
+	};
+
+	// Update read time every second
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setReadTime((prevReadTime) => prevReadTime + 1);
+		}, 1000);
+		return () => clearInterval(interval);
+	}, []);
+
+	// Save read time, scroll percentage, and other data when navigating away from the article
+	const handleOnBack = () => {
+		const dataToSave = {
+			article_id: article.article_id,
+			timestamp: getCurrentTimestamp(),
+			read_time: readTime,
+			scroll_percentage: scrollPercentage
+		};
+		const userId = "1812344";
+		AddClickedArticle(dataToSave, userId, readTime, scrollPercentage);
+		logAsyncStorageContents();
+		navigation.goBack();
+	};	
 
 	if (!article) {
 		return(
@@ -40,7 +75,7 @@ export default function Article({ route }) {
 		<SafeAreaView style={styles.container}>
 			<View style={styles.header}>
 				<PlusIndicator isActive={true} />
-				<TouchableOpacity style={styles.headerMenu} onPress={() => navigation.goBack()}>
+				<TouchableOpacity style={styles.headerMenu} onPress={handleOnBack}>
 					<Ionicons name="arrow-back" size={height * 0.04} color="black" />
 					<Text style={globalStyles.headline}>Artikler</Text>
 				</TouchableOpacity>
@@ -49,6 +84,8 @@ export default function Article({ route }) {
 				style={styles.scrollView}
 				showsVerticalScrollIndicator={false} 
 				showsHorizontalScrollIndicator={false}
+				onScroll={handleScroll}
+				scrollEventThrottle={16} // Adjust the throttle value as needed
 			>
 				<Image source={{ uri: article.image_url }} style={styles.cover} />
 
@@ -64,7 +101,7 @@ export default function Article({ route }) {
 						</Text>
 					</View>
 
-                    {renderedParagraphs}
+					{renderedParagraphs}
 
 				</View>
 			</ScrollView>

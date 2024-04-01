@@ -10,31 +10,51 @@ const clearAsyncStorage = async () => {
 	}
 };
 
-export const AddClickedArticle = async (article, userId) => {
+export const AddClickedArticle = async (article, userId, readTime, scrollPercentage) => {
 	try {
 		// Retrieve user_id from AsyncStorage
 		if (userId !== null) {
-			// If user_id exists, get clicked_article_ids
-			let clickedArticleIds = await AsyncStorage.getItem(userId);
-			if (clickedArticleIds === null) {
-				// If no clicked article ids exist, initialize an empty array
-				clickedArticleIds = [];
+			// If user_id exists, get clicked_article_ids and timestamps
+			let userData = await AsyncStorage.getItem(userId);
+			if (userData === null) {
+				// If no user data exists, initialize an empty object
+				userData = { 
+					clicked_article_ids: [], 
+					timestamps: [], 
+					read_times: [], 
+					scroll_percentages: [] 
+				};
 			} else {
-				// Parse the existing clicked article ids
-				clickedArticleIds = JSON.parse(clickedArticleIds);
+				// Parse the existing user data
+				userData = JSON.parse(userData);
 			}
 
 			// Check if the article id already exists in the array
-			if (!clickedArticleIds.includes(article.article_id)) {
-				// Add the current article_id to clicked_article_ids
-				clickedArticleIds.push(article.article_id);
-				// Save updated clicked_article_ids to AsyncStorage
+			const articleIndex = userData.clicked_article_ids.indexOf(article.article_id);
+			if (articleIndex !== -1) {
+				// Overwrite existing data with new data
+				userData.timestamps[articleIndex] = getCurrentTimestamp(); // Use the custom timestamp function
+				userData.read_times[articleIndex] = parseFloat(readTime);
+				userData.scroll_percentages[articleIndex] = parseFloat(scrollPercentage.toFixed(1));
+
+				// Save updated user data to AsyncStorage
 				await AsyncStorage.setItem(
 					userId,
-					JSON.stringify(clickedArticleIds.join(', '))
+					JSON.stringify(userData)
 				);
+				console.log('Article data overwritten successfully.');
 			} else {
-				console.log('Article ID already exists for the user');
+				// Add the current article_id to clicked_article_ids
+				userData.clicked_article_ids.push(parseInt(article.article_id)); // Ensure integer
+				userData.timestamps.push(getCurrentTimestamp()); // Use the custom timestamp function
+				userData.read_times.push(parseFloat(readTime));
+				userData.scroll_percentages.push(parseFloat(scrollPercentage.toFixed(1)));
+
+				// Save updated user data to AsyncStorage
+				await AsyncStorage.setItem(
+					userId,
+					JSON.stringify(userData)
+				);
 			}
 		} else {
 			console.log('User ID not found in AsyncStorage');
@@ -44,15 +64,38 @@ export const AddClickedArticle = async (article, userId) => {
 	}
 };
 
+// Function to get current timestamp in "YYYY-MM-DD HH:MM:SS" format
+export const getCurrentTimestamp = () => {
+	const now = new Date();
+	return `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+};
+
+export const getScrollPercentage = async (userId, articleId) => {
+	try {
+		const userData = await AsyncStorage.getItem(userId);
+		if (userData !== null) {
+			const parsedUserData = JSON.parse(userData);
+			const index = parsedUserData.clicked_article_ids.indexOf(articleId);
+			if (index !== -1) {
+				return parsedUserData.scroll_percentages[index];
+			}
+		}
+		return null; // Return null if userId or articleId not found
+	} catch (error) {
+		console.error('Error retrieving scroll percentage:', error);
+		return null;
+	}
+};
+
+
 export const logAsyncStorageContents = async () => {
 	try {
 		// Retrieve all keys from AsyncStorage
 		const keys = await AsyncStorage.getAllKeys();
 		for (const key of keys) {
 			// Retrieve data for each key
-			const data = await AsyncStorage.getItem(key);
-			console.log(`${key}:`);
-			console.log(`{ clicked_article_ids: "${data}" }`);
+			const userData = await AsyncStorage.getItem(key);
+			console.log(`${key}:`, JSON.parse(userData));
 		}
 	} catch (error) {
 		console.error('Error logging AsyncStorage contents:', error);
