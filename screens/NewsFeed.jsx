@@ -17,7 +17,7 @@ export default function NewsFeedScreen() {
 	const [isRefreshing, setIsRefreshing] = useState(false);
   const [clickedArticleIds, setClickedArticleIds] = useState([]);
   const [scrollPercentages, setScrollPercentages] = useState([]);
-	const userID = "1812344";
+	const userID = "1078040";
 
 	const fetchData = async (loadMore) => {
 		try {
