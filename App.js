@@ -13,18 +13,18 @@ const NewsStack = createNativeStackNavigator();
 
 function NewsStackScreens() {
 	return (
-		<NewsStack.Navigator initialRouteName={"NewsFeed"} >
-			<NewsStack.Screen
-				name="NewsFeed"
-				component={ NewsFeedScreen }
-				options={{ headerShown: false }}
-			/>
-			<NewsStack.Screen
-				name="Article"
-				component={ ArticleScreen }
-				options={{ headerShown: false }}
-			/>
-		</NewsStack.Navigator>
+			<NewsStack.Navigator initialRouteName={"NewsFeed"} >
+				<NewsStack.Screen
+					name="NewsFeed"
+					component={ NewsFeedScreen }
+					options={{ headerShown: false }}
+				/>
+				<NewsStack.Screen
+					name="Article"
+					component={ ArticleScreen }
+					options={{ headerShown: false }}
+				/>
+			</NewsStack.Navigator>
 	);
 }
 

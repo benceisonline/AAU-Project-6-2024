@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Function to clear AsyncStorage
 const clearAsyncStorage = async () => {
 	try {
 		await AsyncStorage.clear();
@@ -87,7 +86,6 @@ export const getScrollPercentage = async (userId, articleId) => {
 	}
 };
 
-
 export const logAsyncStorageContents = async () => {
 	try {
 		// Retrieve all keys from AsyncStorage
@@ -96,6 +94,20 @@ export const logAsyncStorageContents = async () => {
 			// Retrieve data for each key
 			const userData = await AsyncStorage.getItem(key);
 			console.log(`${key}:`, JSON.parse(userData));
+		}
+	} catch (error) {
+		console.error('Error logging AsyncStorage contents:', error);
+	}
+};
+
+export const getUserHistory = async () => {
+	try {
+		// Retrieve all keys from AsyncStorage
+		const keys = await AsyncStorage.getAllKeys();
+		for (const key of keys) {
+			// Retrieve data for each key
+			const userData = await AsyncStorage.getItem(key);
+			return JSON.parse(userData);
 		}
 	} catch (error) {
 		console.error('Error logging AsyncStorage contents:', error);

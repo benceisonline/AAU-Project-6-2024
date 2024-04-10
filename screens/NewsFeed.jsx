@@ -7,12 +7,16 @@ import Error from '../components/Error';
 import { fetchPredictions, fetchAllArticles } from '../utils/AxiosRequest';
 import ERRORACTIONS from '../constants/ErrorActions';
 import SplashScreen from '../components/SplashScreen'; 
+import { onGoBackFromArticle, removeGoBackFromArticle } from '../utils/Events';
+import { getUserHistory } from '../utils/AsyncFunctions';
 
 export default function NewsFeedScreen() {
 	const [subview, setSubview] = useState(1);
 	const [articles, setArticles] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [isRefreshing, setIsRefreshing] = useState(false);
+  const [clickedArticleIds, setClickedArticleIds] = useState([]);
+  const [scrollPercentages, setScrollPercentages] = useState([]);
 	const userID = "1812344";
 
 	const fetchData = async (loadMore) => {
@@ -67,11 +71,31 @@ export default function NewsFeedScreen() {
 		setSubview(id);
 	};
 
+  const setUserHistory = async () => {
+    const userHistory = await getUserHistory();
+    setClickedArticleIds(userHistory.clicked_article_ids);
+    setScrollPercentages(userHistory.scroll_percentages);
+  };
+
+  const handleGoBackFromArticle = (data) => {
+    setClickedArticleIds(data.clicked_article_ids);
+    setScrollPercentages(data.scroll_percentages);
+  }
+
 	useEffect(() => {
 		fetchData(false);
+
+    setUserHistory();
+
+    onGoBackFromArticle(handleGoBackFromArticle);
+
 		setTimeout(() => {
 			setLoading(false);
 		}, 2000);
+
+    return () => {
+      removeGoBackFromArticle(handleGoBackFromArticle);
+    };
 	}, [subview]);
   
 	if (loading) {
@@ -103,13 +127,23 @@ export default function NewsFeedScreen() {
 					/>
 				}
 			>
-				{articles.map((article) => (
-					<NewsCard 
-						key={article.article_id} 
-						article={article} 
-						userID={userID} // Pass userID as a prop
-					/>
-				))}
+				{articles.map((article) => {
+        let scrollPercentage = 0;
+        if (clickedArticleIds !== null) {
+          console.log('clicked_article_ids:', clickedArticleIds);
+          const index = clickedArticleIds.indexOf(article.article_id);
+          scrollPercentage = index !== -1 ? scrollPercentages[index] : 0;
+        }
+
+        return (
+          <NewsCard 
+            key={article.article_id} 
+            article={article} 
+            userID={userID}
+            scrollPercentage={scrollPercentage}
+          />
+        );
+      })}
 			</ScrollView>
 		</SafeAreaView>
 	);

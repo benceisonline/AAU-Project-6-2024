@@ -60,6 +60,12 @@ export const globalStyles = StyleSheet.create({
 	articleTitle: {
 		fontSize: 24,
 	},
+	horizontalRedLine: {
+		backgroundColor: 'red',
+		borderRadius: 5,
+		height: 4,
+		position: 'absolute',
+	}
 });
 
 export const colors = {

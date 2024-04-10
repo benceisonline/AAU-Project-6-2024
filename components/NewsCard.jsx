@@ -3,24 +3,14 @@ import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, View, Text, Image, Dimensions, TouchableOpacity } from 'react-native';
 import { layout, globalStyles } from '../GlobalStyles';
 import PropTypes from 'prop-types';
-import { getScrollPercentage } from '../utils/AsyncFunctions';
 
 const { height } = Dimensions.get('window');
 
-export default function NewsCard({ article, userID }) {
+export default function NewsCard({ article, userID, scrollPercentage }) {
 	const journalistName = "Lasse Claes";
 	const navigation = useNavigation();
 	const thumbnailHeight = height * 0.2;
 	const journalistImageSize = height * 0.05;
-	const [scrollPercentage, setScrollPercentage] = useState(0);
-
-	useEffect(() => {
-		async function fetchScrollPercentage() {
-			const percentage = await getScrollPercentage(userID, article.article_id);
-			setScrollPercentage(percentage);
-		}
-		fetchScrollPercentage();
-	}, [userID]); // Update scroll percentage whenever userID changes
   
 	const handleOnPress = async () => {
 		navigation.navigate('Article', { article: article });
@@ -42,35 +32,40 @@ export default function NewsCard({ article, userID }) {
 			minute: '2-digit'
 		});
 	};
+
+	useEffect(() => {
+
+	}, []);
   
 	return (
-		<TouchableOpacity style={styles.container} onPress={handleOnPress}>
+		<TouchableOpacity style={styles.outercontainer} onPress={handleOnPress}>
 			{scrollPercentage > 0 && <View style={[styles.horizontalRedLine, horizontalRedLineStyles]} />}
-    
-			<View style={styles.headerContainer}>
-				<View style={styles.journalistContainer}>
-					<Image source={require(`../assets/lasse_claes.jpg`)} style={[styles.journalistImage, { width: journalistImageSize, height: journalistImageSize }]} />
-    
-					<View style={layout.flexColumn}>
-						<Text style={globalStyles.journalistName}>
-							{journalistName}
-						</Text>
-						<View style={styles.newsCategoryContainer}>
-							<Text style={styles.newsCategory}>
-								{article.category_str}
+			<View style={styles.innerContainer}>
+				<View style={styles.headerContainer}>
+					<View style={styles.journalistContainer}>
+						<Image source={require(`../assets/lasse_claes.jpg`)} style={[styles.journalistImage, { width: journalistImageSize, height: journalistImageSize }]} />
+			
+						<View style={layout.flexColumn}>
+							<Text style={globalStyles.journalistName}>
+								{journalistName}
 							</Text>
+							<View style={styles.newsCategoryContainer}>
+								<Text style={styles.newsCategory}>
+									{article.category_str}
+								</Text>
+							</View>
 						</View>
 					</View>
+					<View style={styles.timeStampContainer}>
+						<Text style={globalStyles.timeStamp}>
+							{formatPublishedTime(article.published_time)}
+						</Text>
+					</View>
 				</View>
-				<View style={styles.timeStampContainer}>
-					<Text style={globalStyles.timeStamp}>
-						{formatPublishedTime(article.published_time)}
-					</Text>
-				</View>
+			
+				<Image source={{ uri: article.image_url }} resizeMode='cover' style={[styles.thumbnail, { height: thumbnailHeight }]} />
+				<Text style={globalStyles.newsTitle}>{article.title}</Text>
 			</View>
-    
-			<Image source={{ uri: article.image_url }} resizeMode='cover' style={[styles.thumbnail, { height: thumbnailHeight }]} />
-			<Text style={globalStyles.newsTitle}>{article.title}</Text>
 		</TouchableOpacity>
 	);
 }
@@ -90,12 +85,14 @@ NewsCard.propTypes = {
 };
 
 const styles = StyleSheet.create({
-	container: {
+	outercontainer: {
 		backgroundColor: '#F4F4F4',
 		marginBottom: '5%',
-		padding: '5% 5% 5% 5%',
 		borderRadius: 7.5,
 		...layout.flexColumn
+	},
+	innerContainer: {
+		padding: '5%',
 	},
 	thumbnail: {
 		width: '100%',
@@ -138,10 +135,7 @@ const styles = StyleSheet.create({
 		backgroundColor: 'yellow',
 	},
 	horizontalRedLine: {
-		backgroundColor: 'red',
-		borderRadius: 5,
-		height: 4,
-		position: 'absolute',
+		...globalStyles.horizontalRedLine,
 		bottom: 0,
 		left: 0,
 		right: 0,

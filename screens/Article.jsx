@@ -7,17 +7,18 @@ import ERRORACTIONS from '../constants/ErrorActions';
 import Error from '../components/Error';
 import PropTypes from 'prop-types';
 import PlusIndicator from '../components/PlusIndicator';
-import { AddClickedArticle, logAsyncStorageContents, getCurrentTimestamp } from '../utils/AsyncFunctions';
+import { AddClickedArticle, getCurrentTimestamp, getUserHistory } from '../utils/AsyncFunctions';
+import { emitGoBackFromArticle } from '../utils/Events';
 
 const { height } = Dimensions.get('window');
 
 export default function Article({ route }) {
+	const navigation = useNavigation();
+	const { article } = route.params;
 	const [readTime, setReadTime] = useState(0);
 	const [scrollPercentage, setScrollPercentage] = useState(0);
 	const [scrollHeight, setScrollHeight] = useState(0);
 	const journalistName = "Lasse Claes";
-	const navigation = useNavigation();
-	const { article } = route.params;
 
 	// Update scroll percentage on scroll
 	const handleScroll = (event) => {
@@ -26,6 +27,10 @@ export default function Article({ route }) {
 		const currentScrollPercentage = (contentOffset.y / currentScrollHeight) * 100;
 		setScrollHeight(currentScrollHeight);
 		setScrollPercentage(currentScrollPercentage);
+	};
+
+	const horizontalRedLineStyles = {
+		width: `${scrollPercentage}%`,
 	};
 
 	// Update read time every second
@@ -37,16 +42,22 @@ export default function Article({ route }) {
 	}, []);
 
 	// Save read time, scroll percentage, and other data when navigating away from the article
-	const handleOnBack = () => {
+	const handleOnBack = async () => {
+		if (scrollPercentage > 100) {
+			scrollPercentage = 100;
+		}
+
 		const dataToSave = {
 			article_id: article.article_id,
 			timestamp: getCurrentTimestamp(),
 			read_time: readTime,
 			scroll_percentage: scrollPercentage
 		};
+
 		const userId = "1812344";
 		AddClickedArticle(dataToSave, userId, readTime, scrollPercentage);
-		logAsyncStorageContents();
+		const userHistory = await getUserHistory();
+		emitGoBackFromArticle({ clicked_article_ids: userHistory.clicked_article_ids, scroll_percentages: userHistory.scroll_percentages });
 		navigation.goBack();
 	};	
 
@@ -80,6 +91,7 @@ export default function Article({ route }) {
 					<Text style={globalStyles.headline}>Artikler</Text>
 				</TouchableOpacity>
 			</View>
+			{scrollPercentage > 0 && <View style={[styles.horizontalRedLine, horizontalRedLineStyles]} />}
 			<ScrollView 
 				style={styles.scrollView}
 				showsVerticalScrollIndicator={false} 
@@ -158,5 +170,11 @@ const styles = StyleSheet.create({
 		...layout.flexRow,
 		alignItems: 'center',
 		top: 0,
-	}
+	},
+	horizontalRedLine: {
+		...globalStyles.horizontalRedLine,
+		top: 0,
+		left: 0,
+		right: 0,
+	},	 
 });
