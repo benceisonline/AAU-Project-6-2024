@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar, Text } from 'react-native';
 import { useFonts } from "expo-font";
+import { createUserId } from './utils/AsyncStorage';
 
 // News Screens
 import NewsFeedScreen from './screens/NewsFeed';
@@ -29,6 +30,7 @@ function NewsStackScreens() {
 }
 
 export default function App() {
+	createUserId();
 	const [fontsLoaded] = useFonts({
 		"WorkSans-Regular": require("./assets/fonts/WorkSans-Regular.ttf"),
 		"WorkSans-Medium": require("./assets/fonts/WorkSans-Medium.ttf"),
