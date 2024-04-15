@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; 
+import React, { useState, useEffect, useRef } from 'react'; 
 import { StyleSheet, SafeAreaView, ScrollView, RefreshControl } from 'react-native';
 import { layout } from '../GlobalStyles';
 import NewsCard from '../components/NewsCard';
@@ -9,6 +9,7 @@ import ERRORACTIONS from '../constants/ErrorActions';
 import SplashScreen from '../components/SplashScreen'; 
 
 export default function NewsFeedScreen() {
+  const scrollViewRef = useRef(null);
   const [subview, setSubview] = useState(1);
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,18 +22,27 @@ export default function NewsFeedScreen() {
       switch (subview) {
         // Til dig
         case 1:
-          data = await fetchPredictions(userID, 10);
+          articles.length === 0 ? data = await fetchPredictions(userID, 0, 10) : data = await fetchPredictions(userID, articles.length, 10);
           break;
         // Alle nyheder
         case 3:
-          data = await fetchAllArticles();
+          articles.length === 0 ? data = await fetchAllArticles(0, 10) : data = await fetchAllArticles(articles.length, 10);
           break;
         default:
           break;
       };
 
       if (loadMore) {
-        setArticles(prevArticles => [...prevArticles, ...data.news]);
+        setArticles(prevArticles => {
+          let existingArticlesIds = prevArticles.map(article => article.article_id);
+
+          const filteredData = data.news.filter(item => !existingArticlesIds.includes(item.article_id));
+          
+          if (filteredData.length !== 0)
+            return [...prevArticles, ...data.news];
+
+          return prevArticles;
+        });
       } else {
         setArticles(data.news);
       }
@@ -56,7 +66,8 @@ export default function NewsFeedScreen() {
 
 	const handleLoadMore = async (event) => {
 		const { layoutMeasurement, contentSize, contentOffset } = event.nativeEvent;
-		const isAtBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height;
+    // Fetch more articles when user has scrolled almost to the bottom of the screen
+		const isAtBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height - 500;
 
     if (isAtBottom) {
       await fetchData(true);
@@ -66,6 +77,12 @@ export default function NewsFeedScreen() {
   const onPressedSubView = (id) => {
     setSubview(id);
   };
+
+  const onPressedLogo = () => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollTo({ y: 0, animated: true });
+    }
+  }
 
   useEffect(() => {
     fetchData(false);
@@ -86,8 +103,9 @@ export default function NewsFeedScreen() {
 
   return (
     <SafeAreaView style={ styles.container }>
-      <NewsHeader onPressedSubView={onPressedSubView} />
+      <NewsHeader onPressedSubView={onPressedSubView} onPressedLogo={onPressedLogo} />
       <ScrollView 
+        ref={scrollViewRef}
         style={ styles.feed } 
         showsVerticalScrollIndicator={false} 
         showsHorizontalScrollIndicator={false}
