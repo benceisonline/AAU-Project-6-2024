@@ -38,6 +38,8 @@ export default function App() {
 		"Karla-Medium": require("./assets/fonts/Karla-Medium.ttf"),
 		"InterTight-SemiBold": require("./assets/fonts/InterTight-SemiBold.ttf"),
 		"InterTight-Bold": require("./assets/fonts/InterTight-Bold.ttf"),
+		"Calicanto-Regular": require("./assets/fonts/Calicanto-Regular.ttf"),
+		"EuropaGroteskSH-Regular": require("./assets/fonts/EuropaGroteskSH-Reg.otf"),
 	});
 	if (!fontsLoaded) {
 	return <Text>Loading...</Text>;
