@@ -26,9 +26,5 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-      "extra": {
-        "SUPABASE_URL": "https://rloyhaxoudsrlnodgmjk.supabase.co",
-        "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJsb3loYXhvdWRzcmxub2RnbWprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTI3NzQ2NzYsImV4cCI6MjAyODM1MDY3Nn0.3inRGcRHWUbTFu1bij7cjlKTPSrdSlmP27eetHXIi_k"
-      }
   }
 }
