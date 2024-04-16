@@ -3,6 +3,7 @@ import { StyleSheet, SafeAreaView, ScrollView, RefreshControl } from 'react-nati
 import { layout } from '../GlobalStyles';
 import NewsCard from '../components/NewsCard';
 import NewsHeader from '../components/NewsHeader';
+import BouncingLogo from '../components/BouncingLogo';
 import Error from '../components/Error';
 import { fetchPredictions, fetchAllArticles } from '../utils/AxiosRequest';
 import ERRORACTIONS from '../constants/ErrorActions';
@@ -10,6 +11,7 @@ import SplashScreen from '../components/SplashScreen';
 
 export default function NewsFeedScreen() {
   const scrollViewRef = useRef(null);
+  const [waiting, setWaiting] = useState(true);
   const [subview, setSubview] = useState(1);
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,6 +19,8 @@ export default function NewsFeedScreen() {
   const userID = "1812344"; 
 
   const fetchData = async (loadMore) => {
+    setWaiting(true);
+
     try {
       let data;
       switch (subview) {
@@ -46,15 +50,20 @@ export default function NewsFeedScreen() {
       } else {
         setArticles(data.news);
       }
+
+      setWaiting(false);
       
       // Set loading to false after fetching articles, but wait at least 2000ms
-      setTimeout(() => {
-        setLoading(false);
-      }, 2000);
+      if (loading) {
+        setTimeout(() => {
+          setLoading(false);
+        }, 2000);
+      }
     } catch (error) {
       console.error('Error fetching articles:', error);
       // Handle error appropriately, e.g., set loading to false
 			setLoading(false);
+      setWaiting(false);
     }
   };
 
@@ -104,27 +113,30 @@ export default function NewsFeedScreen() {
   return (
     <SafeAreaView style={ styles.container }>
       <NewsHeader onPressedSubView={onPressedSubView} onPressedLogo={onPressedLogo} />
-      <ScrollView 
-        ref={scrollViewRef}
-        style={ styles.feed } 
-        showsVerticalScrollIndicator={false} 
-        showsHorizontalScrollIndicator={false}
-        onScroll={handleLoadMore}
-        scrollEventThrottle={200}
-        refreshControl={
-          <RefreshControl
-              color={'#E3141D'}
-              tintColor={'#E3141D'}
-              title='Opdaterer...'
-              refreshing={isRefreshing}
-              onRefresh={handleRefresh}
-          />
-        }
-      >
-        {articles.map((article) => (
-          <NewsCard key={article.article_id} article={article} />
-        ))}
-      </ScrollView>
+      {waiting && <BouncingLogo />}
+      {!waiting && (
+        <ScrollView 
+          ref={scrollViewRef}
+          style={ styles.feed } 
+          showsVerticalScrollIndicator={false} 
+          showsHorizontalScrollIndicator={false}
+          onScroll={handleLoadMore}
+          scrollEventThrottle={200}
+          refreshControl={
+            <RefreshControl
+                color={'#E3141D'}
+                tintColor={'#E3141D'}
+                title='Opdaterer...'
+                refreshing={isRefreshing}
+                onRefresh={handleRefresh}
+            />
+          }
+        >
+          {articles.map((article) => (
+            <NewsCard key={article.article_id} article={article} />
+          ))}
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 }
