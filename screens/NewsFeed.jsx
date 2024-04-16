@@ -14,7 +14,6 @@ export default function NewsFeedScreen() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  let switchedSubView = true;
   const userID = "1812344"; 
 
   const fetchData = async (loadMore) => {
@@ -23,11 +22,11 @@ export default function NewsFeedScreen() {
       switch (subview) {
         // Til dig
         case 1:
-          switchedSubView ? data = await fetchPredictions(userID, 0, 10) : data = await fetchPredictions(userID, articles.length, 10);
+          loadMore ? data = await fetchPredictions(userID, articles.length, 10) : data = await fetchPredictions(userID, 0, 10) ;
           break;
         // Alle nyheder
         case 3:
-          switchedSubView ? data = await fetchAllArticles(0, 10) : data = await fetchAllArticles(articles.length, 10);
+          loadMore ? data = await fetchAllArticles(articles.length, 10) : data = await fetchAllArticles(0, 10);
           break;
         default:
           break;
@@ -76,14 +75,7 @@ export default function NewsFeedScreen() {
   }
 
   const onPressedSubView = (id) => {
-    setSubview(prevId => {
-      if (prevId != id) 
-        switchedSubView = true;
-      else
-        switchedSubView = false;
-
-        return id;
-    });
+    setSubview(id);
   };
 
   const onPressedLogo = () => {
