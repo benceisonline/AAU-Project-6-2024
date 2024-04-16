@@ -31,7 +31,7 @@ export const fetchAllArticles = async (startIndex, noOfRecommendations) => {
 	};
 
   try {
-    const response = await axios.get(apiUrl + '/all', requestData, {
+    const response = await axios.post(apiUrl + '/all', requestData, {
 			headers: {
 				'Content-Type': 'application/json',
 			},
