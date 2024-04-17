@@ -15,13 +15,13 @@ const BouncingLogo = () => {
       Animated.sequence([
         Animated.timing(animation, {
           toValue: 1,
-          duration: 1000,
+          duration: 500,
           easing: Easing.linear,
           useNativeDriver: true,
         }),
         Animated.timing(animation, {
           toValue: 0,
-          duration: 1000,
+          duration: 500,
           easing: Easing.linear,
           useNativeDriver: true,
         }),
