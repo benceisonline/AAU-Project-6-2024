@@ -16,6 +16,7 @@ export default function NewsFeedScreen() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const loadingTimeout = 2000;
   const userID = "1812344"; 
 
   const fetchData = async (loadMore) => {
@@ -57,7 +58,7 @@ export default function NewsFeedScreen() {
       if (loading) {
         setTimeout(() => {
           setLoading(false);
-        }, 2000);
+        }, loadingTimeout);
       }
     } catch (error) {
       console.error('Error fetching articles:', error);
