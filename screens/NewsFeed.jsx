@@ -128,22 +128,22 @@ export default function NewsFeedScreen() {
 				}
 			>
 				{articles.map((article) => {
-        let scrollPercentage = 0;
-        if (clickedArticleIds !== null) {
-          console.log('clicked_article_ids:', clickedArticleIds);
-          const index = clickedArticleIds.indexOf(article.article_id);
-          scrollPercentage = index !== -1 ? scrollPercentages[index] : 0;
-        }
+					let scrollPercentage = 0;
+					if (clickedArticleIds !== null) {
+						console.log('clicked_article_ids:', clickedArticleIds);
+						const index = clickedArticleIds.indexOf(article.article_id);
+						scrollPercentage = index !== -1 ? scrollPercentages[index] : 0;
+					}
 
-        return (
-          <NewsCard 
-            key={article.article_id} 
-            article={article} 
-            userID={userID}
-            scrollPercentage={scrollPercentage}
-          />
-        );
-      })}
+					return (
+						<NewsCard 
+							key={article.article_id} 
+							article={article} 
+							userID={userID}
+							scrollPercentage={scrollPercentage}
+						/>
+					);
+				})}
 			</ScrollView>
 		</SafeAreaView>
 	);
