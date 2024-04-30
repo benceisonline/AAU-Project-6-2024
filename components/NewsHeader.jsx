@@ -18,7 +18,7 @@ const SubViewTitles = [
   }
 ]
 
-export default function NewsHeader({ onPressedSubView }) {
+export default function NewsHeader({ onPressedSubView, onPressedLogo }) {
   const { height } = Dimensions.get('window');
   const [activeSubView, setActiveSubView]  = useState(1);
 
@@ -50,12 +50,14 @@ export default function NewsHeader({ onPressedSubView }) {
 
       <PlusIndicator isActive={true} />
 
-      <View style={ styles.headlineContainer } >
-        <Image source={require(`../assets/eb_logo.png`)} resizeMode='contain' style={{ width: logoHeight, height: logoHeight }} />
-        <Text style={ styles.headline } >
-          Nyheder
-        </Text>
-      </View>
+        <TouchableOpacity onPress={onPressedLogo} >
+          <View style={ styles.headlineContainer } >
+            <Image source={require(`../assets/eb_logo.png`)} resizeMode='contain' style={{ width: logoHeight, height: logoHeight }} />
+            <Text style={ styles.headline } >
+              Nyheder
+            </Text>
+          </View>
+        </TouchableOpacity>
 
       <View style={ styles.headlineContainer } >
         <SubViews />
