@@ -7,15 +7,14 @@ import ERRORACTIONS from '../constants/ErrorActions';
 import Error from '../components/Error';
 import PropTypes from 'prop-types';
 import PlusIndicator from '../components/PlusIndicator';
-import { AddClickedArticle, getCurrentTimestamp, getUserHistory } from '../utils/AsyncFunctions';
+import { storeUserData } from '../utils/AsyncFunctions';
 import { emitGoBackFromArticle } from '../utils/Events';
 
 const { height } = Dimensions.get('window');
 
 export default function Article({ route }) {
 	const navigation = useNavigation();
-	const { article } = route.params;
-	const [readTime, setReadTime] = useState(0);
+	const { article, articlesInView } = route.params;
 	const [scrollPercentage, setScrollPercentage] = useState(0);
 	const [scrollHeight, setScrollHeight] = useState(0);
 	const journalistName = "Lasse Claes";
@@ -33,31 +32,14 @@ export default function Article({ route }) {
 		width: `${scrollPercentage}%`,
 	};
 
-	// Update read time every second
 	useEffect(() => {
-		const interval = setInterval(() => {
-			setReadTime((prevReadTime) => prevReadTime + 1);
-		}, 1000);
-		return () => clearInterval(interval);
 	}, []);
 
 	// Save read time, scroll percentage, and other data when navigating away from the article
 	const handleOnBack = async () => {
-		if (scrollPercentage > 100) {
-			scrollPercentage = 100;
-		}
+		scrollPercentage > 100 ? storeUserData(article, articlesInView, 100) : storeUserData(article, articlesInView, scrollPercentage);
 
-		const dataToSave = {
-			article_id: article.article_id,
-			timestamp: getCurrentTimestamp(),
-			read_time: readTime,
-			scroll_percentage: scrollPercentage
-		};
-
-		const userId = "1812344";
-		AddClickedArticle(dataToSave, userId, readTime, scrollPercentage);
-		const userHistory = await getUserHistory();
-		emitGoBackFromArticle({ clicked_article_ids: userHistory.clicked_article_ids, scroll_percentages: userHistory.scroll_percentages });
+		emitGoBackFromArticle({ clicked_article_id: article.article_id, scroll_percentage: scrollPercentage });
 		navigation.goBack();
 	};	
 
@@ -85,15 +67,18 @@ export default function Article({ route }) {
 	return (
 		<SafeAreaView style={styles.container}>
 			<View style={styles.header}>
-				<PlusIndicator isActive={true} />
 				<TouchableOpacity style={styles.headerMenu} onPress={handleOnBack}>
 					<Ionicons name="arrow-back" size={height * 0.04} color="black" />
 					<Text style={globalStyles.headline}>Artikler</Text>
 				</TouchableOpacity>
+				<PlusIndicator isActive={true} />
 			</View>
-			{scrollPercentage > 0 && <View style={[styles.horizontalRedLine, horizontalRedLineStyles]} />}
-			<ScrollView 
-				style={styles.scrollView}
+			{scrollPercentage > 0 ? (
+				<View style={[styles.horizontalRedLine, horizontalRedLineStyles]} />
+			) : (
+				<View style={[styles.horizontalRedLine, { width: 0 }]} />
+			)}
+			<ScrollView
 				showsVerticalScrollIndicator={false} 
 				showsHorizontalScrollIndicator={false}
 				onScroll={handleScroll}
@@ -139,12 +124,10 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	header: {
-		alignItems: 'center',
-		paddingHorizontal: '4%',
-		...layout.flexRow,
+		...layout.centeredRow,
+		justifyContent: 'space-between',
 	},
 	scrollView: {
-		marginTop: '4.5%',
 	},
 	cover: {
 		width: '100%',
@@ -168,13 +151,15 @@ const styles = StyleSheet.create({
 	},
 	headerMenu: {
 		...layout.flexRow,
+		paddingHorizontal: '4%',
 		alignItems: 'center',
 		top: 0,
 	},
 	horizontalRedLine: {
 		...globalStyles.horizontalRedLine,
-		top: 0,
+		position: 'relative',
 		left: 0,
 		right: 0,
+		marginTop: '4.5%',
 	},	 
 });

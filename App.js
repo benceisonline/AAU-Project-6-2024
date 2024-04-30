@@ -1,4 +1,5 @@
 import React from 'react'; 
+import { createSessionId } from './utils/AsyncFunctions';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar, Text } from 'react-native';
@@ -29,6 +30,8 @@ function NewsStackScreens() {
 }
 
 export default function App() {
+	createSessionId();
+
 	const [fontsLoaded] = useFonts({
 		"WorkSans-Regular": require("./assets/fonts/WorkSans-Regular.ttf"),
 		"WorkSans-Medium": require("./assets/fonts/WorkSans-Medium.ttf"),

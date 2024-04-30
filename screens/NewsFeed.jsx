@@ -8,7 +8,6 @@ import { fetchPredictions, fetchAllArticles } from '../utils/AxiosRequest';
 import ERRORACTIONS from '../constants/ErrorActions';
 import SplashScreen from '../components/SplashScreen'; 
 import { onGoBackFromArticle, removeGoBackFromArticle } from '../utils/Events';
-import { getUserHistory } from '../utils/AsyncFunctions';
 
 export default function NewsFeedScreen() {
 	const [subview, setSubview] = useState(1);
@@ -25,9 +24,9 @@ export default function NewsFeedScreen() {
 			switch (subview) {
 			// Til dig
 			case 1:
-				data = await fetchPredictions(userID, 10);
+				data = await fetchPredictions(userID, 10, 10);
 				break;
-				// Alle nyheder
+			// Alle nyheder
 			case 3:
 				data = await fetchAllArticles();
 				break;
@@ -71,21 +70,25 @@ export default function NewsFeedScreen() {
 		setSubview(id);
 	};
 
-  const setUserHistory = async () => {
-    const userHistory = await getUserHistory();
-    setClickedArticleIds(userHistory.clicked_article_ids);
-    setScrollPercentages(userHistory.scroll_percentages);
-  };
-
   const handleGoBackFromArticle = (data) => {
-    setClickedArticleIds(data.clicked_article_ids);
-    setScrollPercentages(data.scroll_percentages);
+    setClickedArticleIds(prevClickedArticles => {
+			if (prevClickedArticles.includes(data.clicked_article_id)) {
+				return prevClickedArticles;
+			}
+
+			return [...prevClickedArticles, data.clicked_article_id];
+		});
+    setScrollPercentages(prevScrollPercentages => {
+			if (prevScrollPercentages.includes(data.scroll_percentage)) {
+				return prevScrollPercentages;
+			}
+
+			return [...prevScrollPercentages, data.scroll_percentage];
+		});
   }
 
 	useEffect(() => {
 		fetchData(false);
-
-    setUserHistory();
 
     onGoBackFromArticle(handleGoBackFromArticle);
 
@@ -128,22 +131,22 @@ export default function NewsFeedScreen() {
 				}
 			>
 				{articles.map((article) => {
-        let scrollPercentage = 0;
-        if (clickedArticleIds !== null) {
-          console.log('clicked_article_ids:', clickedArticleIds);
-          const index = clickedArticleIds.indexOf(article.article_id);
-          scrollPercentage = index !== -1 ? scrollPercentages[index] : 0;
-        }
+					let scrollPercentage = 0;
+					if (clickedArticleIds !== null) {
+						const index = clickedArticleIds.indexOf(article.article_id);
+						scrollPercentage = index !== -1 ? scrollPercentages[index] : 0;
+					}
 
-        return (
-          <NewsCard 
-            key={article.article_id} 
-            article={article} 
-            userID={userID}
-            scrollPercentage={scrollPercentage}
-          />
-        );
-      })}
+					return (
+						<NewsCard 
+							key={article.article_id} 
+							article={article} 
+							userID={userID}
+							scrollPercentage={scrollPercentage}
+							articlesInView={articles}
+						/>
+					);
+        })}
 			</ScrollView>
 		</SafeAreaView>
 	);

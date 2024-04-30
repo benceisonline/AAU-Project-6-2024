@@ -35,7 +35,7 @@ export default function NewsHeader({ onPressedSubView }) {
     return (
       <>
         {SubViewTitles.map((item) => (
-          <TouchableOpacity key={ item.id } onPress={() => handleOnPress( item.id )} style={ styles.subViewContainer } >
+          <TouchableOpacity key={ item.id } onPress={() => handleOnPress( item.id )} style={ styles.subView } >
             <Text style={[globalStyles.subView, activeSubView === item.id ? styles.activeSubView : null]}>
               {item.title}
             </Text>
@@ -48,16 +48,18 @@ export default function NewsHeader({ onPressedSubView }) {
   return(
     <View style={ styles.headerContainer } >
 
-      <PlusIndicator isActive={true} />
-
       <View style={ styles.headlineContainer } >
-        <Image source={require(`../assets/eb_logo.png`)} resizeMode='contain' style={{ width: logoHeight, height: logoHeight }} />
-        <Text style={ styles.headline } >
-          Nyheder
-        </Text>
+        <View style={ styles.headlineLogo } >
+          <Image source={require(`../assets/eb_logo.png`)} resizeMode='contain' style={{ width: logoHeight, height: logoHeight }} />
+          <Text style={ styles.headline } >
+            Nyheder
+          </Text>
+        </View>
+          
+        <PlusIndicator isActive={true} />
       </View>
 
-      <View style={ styles.headlineContainer } >
+      <View style={ styles.subViewContainer } >
         <SubViews />
       </View>
     </View>
@@ -66,16 +68,19 @@ export default function NewsHeader({ onPressedSubView }) {
 
 const styles = StyleSheet.create({
   headerContainer: {
-    paddingHorizontal: '5%',
     paddingBottom: '2.5%',
     top: 0,
     backgroundColor: '#FCFCFC',
     ...layout.flexColumn
   },
   headlineContainer: {
-    justifyContent: 'flex-start',
     alignItems: 'center',
     marginVertical: '2%',
+    justifyContent: 'space-between',
+    ...layout.flexRow
+  },
+  headlineLogo: {
+    paddingHorizontal: '5%',
     ...layout.flexRow
   },
   headline: {
@@ -83,7 +88,13 @@ const styles = StyleSheet.create({
     ...globalStyles.headline
   },
   subViewContainer: {
-    marginRight: '7.5%'
+    paddingHorizontal: '5%',
+    ...layout.flexRow
+  },
+  subView: {
+    marginRight: '7.5%',
+    alignItems: 'center',
+    marginVertical: '2%'
   },
   activeSubView: {
     color: '#000',

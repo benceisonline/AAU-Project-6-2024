@@ -98,6 +98,10 @@ export const layout = StyleSheet.create({
 		display: 'flex', 
 		flexDirection: 'row'
 	},
+	reverseFlexRow: {
+		display: 'flex', 
+		flexDirection: 'row-reverse'
+	},
 	centeredRow: {  
 		display: 'flex', 
 		flexDirection: 'row', 
