@@ -18,6 +18,7 @@ export default function NewsFeedScreen() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const loadingTimeout = 2000;
   const userID = "1812344"; 
+  const distanceToBottom = 500;
 
   const fetchData = async (loadMore) => {
     setWaiting(true);
@@ -77,7 +78,7 @@ export default function NewsFeedScreen() {
 	const handleLoadMore = async (event) => {
 		const { layoutMeasurement, contentSize, contentOffset } = event.nativeEvent;
     // Fetch more articles when user has scrolled almost to the bottom of the screen
-		const isAtBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height - 500;
+		const isAtBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height - distanceToBottom;
 
     if (isAtBottom) {
       await fetchData(true);
