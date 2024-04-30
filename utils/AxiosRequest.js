@@ -1,13 +1,15 @@
 const axios = require('axios').default;
 
-const localUrl = '192.168.1.31';
+const localUrl = '172.20.10.4';
 const apiUrl = `http://${localUrl}:8000`;
 
-export const fetchPredictions = async (userId, noOfRecommendations) => {
+export const fetchPredictions = async (userId, startIndex, noOfRecommendations) => {
 	const requestData = {
 		user_id: userId,
+		start_index: startIndex,
 		no_recommendations: noOfRecommendations,
 	};
+
 
 	try {
 		const response = await axios.post(apiUrl + '/predict', requestData, {
@@ -22,9 +24,14 @@ export const fetchPredictions = async (userId, noOfRecommendations) => {
 	}
 };
 
-export const fetchAllArticles = async () => {
-	try {
-		const response = await axios.get(apiUrl + '/all', {
+export const fetchAllArticles = async (startIndex, noOfRecommendations) => {
+	const requestData = {
+		start_index: startIndex,
+		no_recommendations: noOfRecommendations,
+	};
+
+  try {
+    const response = await axios.post(apiUrl + '/all', requestData, {
 			headers: {
 				'Content-Type': 'application/json',
 			},

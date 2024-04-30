@@ -1,56 +1,76 @@
-import React, { useState, useEffect } from 'react'; 
+import React, { useState, useEffect, useRef } from 'react'; 
 import { StyleSheet, SafeAreaView, ScrollView, RefreshControl } from 'react-native';
 import { layout } from '../GlobalStyles';
 import NewsCard from '../components/NewsCard';
 import NewsHeader from '../components/NewsHeader';
+import BouncingLogo from '../components/BouncingLogo';
 import Error from '../components/Error';
 import { fetchPredictions, fetchAllArticles } from '../utils/AxiosRequest';
 import ERRORACTIONS from '../constants/ErrorActions';
 import SplashScreen from '../components/SplashScreen'; 
 import { onGoBackFromArticle, removeGoBackFromArticle } from '../utils/Events';
-import { getUserHistory } from '../utils/AsyncFunctions';
 
 export default function NewsFeedScreen() {
-	const [subview, setSubview] = useState(1);
-	const [articles, setArticles] = useState([]);
-	const [loading, setLoading] = useState(true);
-	const [isRefreshing, setIsRefreshing] = useState(false);
+  const scrollViewRef = useRef(null);
+  const [waiting, setWaiting] = useState(true);
+  const [subview, setSubview] = useState(1);
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [clickedArticleIds, setClickedArticleIds] = useState([]);
   const [scrollPercentages, setScrollPercentages] = useState([]);
-	const userID = "1078040";
+  const loadingTimeout = 2000;
+  const userID = "1812344"; 
+  const distanceToBottom = 500;
+  
+  const fetchData = async (loadMore) => {
+    setWaiting(true);
 
-	const fetchData = async (loadMore) => {
-		try {
-			let data;
-			switch (subview) {
-			// Til dig
-			case 1:
-				data = await fetchPredictions(userID, 10);
-				break;
-				// Alle nyheder
-			case 3:
-				data = await fetchAllArticles();
-				break;
-			default:
-				break;
-			};
+    try {
+      let data;
+      switch (subview) {
+        // Til dig
+        case 1:
+          loadMore ? data = await fetchPredictions(userID, articles.length, 10) : data = await fetchPredictions(userID, 0, 10) ;
+          break;
+        // Alle nyheder
+        case 3:
+          loadMore ? data = await fetchAllArticles(articles.length, 10) : data = await fetchAllArticles(0, 10);
+          break;
+        default:
+          break;
+      };
 
-			if (loadMore) {
-				setArticles(prevArticles => [...prevArticles, ...data.news]);
-			} else {
-				setArticles(data.news);
-			}
+      if (loadMore) {
+        setArticles(prevArticles => {
+          let existingArticlesIds = prevArticles.map(article => article.article_id);
+
+          const filteredData = data.news.filter(item => !existingArticlesIds.includes(item.article_id));
           
-			// Set loading to false after fetching articles, but wait at least 2000ms
-			setTimeout(() => {
-				setLoading(false);
-			}, 2000);
-		} catch (error) {
-			console.error('Error fetching articles:', error);
-			// Handle error appropriately, e.g., set loading to false
+          if (filteredData.length !== 0)
+            return [...prevArticles, ...data.news];
+
+          return prevArticles;
+        });
+      } else {
+        setArticles(data.news);
+      }
+
+      setWaiting(false);
+      
+      // Set loading to false after fetching articles, but wait at least 2000ms
+      if (loading) {
+        setTimeout(() => {
+          setLoading(false);
+        }, loadingTimeout);
+      }
+    } catch (error) {
+      console.error('Error fetching articles:', error);
+      // Handle error appropriately, e.g., set loading to false
 			setLoading(false);
-		}
-	};
+      setWaiting(false);
+    }
+  };
 
 	const handleRefresh = async () => {
 		setIsRefreshing(true);
@@ -60,7 +80,8 @@ export default function NewsFeedScreen() {
 
 	const handleLoadMore = async (event) => {
 		const { layoutMeasurement, contentSize, contentOffset } = event.nativeEvent;
-		const isAtBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height;
+    // Fetch more articles when user has scrolled almost to the bottom of the screen
+		const isAtBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height - distanceToBottom;
 
 		if (isAtBottom) {
 			await fetchData(true);
@@ -71,21 +92,31 @@ export default function NewsFeedScreen() {
 		setSubview(id);
 	};
 
-  const setUserHistory = async () => {
-    const userHistory = await getUserHistory();
-    setClickedArticleIds(userHistory.clicked_article_ids);
-    setScrollPercentages(userHistory.scroll_percentages);
-  };
-
   const handleGoBackFromArticle = (data) => {
-    setClickedArticleIds(data.clicked_article_ids);
-    setScrollPercentages(data.scroll_percentages);
+    setClickedArticleIds(prevClickedArticles => {
+			if (prevClickedArticles.includes(data.clicked_article_id)) {
+				return prevClickedArticles;
+			}
+
+			return [...prevClickedArticles, data.clicked_article_id];
+		});
+    setScrollPercentages(prevScrollPercentages => {
+			if (prevScrollPercentages.includes(data.scroll_percentage)) {
+				return prevScrollPercentages;
+			}
+
+			return [...prevScrollPercentages, data.scroll_percentage];
+		});
   }
 
-	useEffect(() => {
-		fetchData(false);
+  const onPressedLogo = () => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollTo({ y: 0, animated: true });
+    }
+  }
 
-    setUserHistory();
+  useEffect(() => {
+		fetchData(false);
 
     onGoBackFromArticle(handleGoBackFromArticle);
 
@@ -110,8 +141,10 @@ export default function NewsFeedScreen() {
 
 	return (
 		<SafeAreaView style={ styles.container }>
-			<NewsHeader onPressedSubView={onPressedSubView} />
-			<ScrollView 
+			<NewsHeader onPressedSubView={onPressedSubView} onPressedLogo={onPressedLogo} />
+			{waiting && <BouncingLogo />}
+			{!waiting && (
+				<ScrollView
 				style={ styles.feed } 
 				showsVerticalScrollIndicator={false} 
 				showsHorizontalScrollIndicator={false}
@@ -119,18 +152,17 @@ export default function NewsFeedScreen() {
 				scrollEventThrottle={200}
 				refreshControl={
 					<RefreshControl
-						color={'#E3141D'}
-						tintColor={'#E3141D'}
-						title='Opdaterer...'
-						refreshing={isRefreshing}
-						onRefresh={handleRefresh}
+					color={'#E3141D'}
+					tintColor={'#E3141D'}
+					title='Opdaterer...'
+					refreshing={isRefreshing}
+					onRefresh={handleRefresh}
 					/>
 				}
-			>
+				>
 				{articles.map((article) => {
 					let scrollPercentage = 0;
 					if (clickedArticleIds !== null) {
-						console.log('clicked_article_ids:', clickedArticleIds);
 						const index = clickedArticleIds.indexOf(article.article_id);
 						scrollPercentage = index !== -1 ? scrollPercentages[index] : 0;
 					}
@@ -138,13 +170,14 @@ export default function NewsFeedScreen() {
 					return (
 						<NewsCard 
 							key={article.article_id} 
-							article={article} 
-							userID={userID}
+							article={article}
 							scrollPercentage={scrollPercentage}
+							articlesInView={articles}
 						/>
 					);
-				})}
-			</ScrollView>
+        		})}
+				</ScrollView>
+			)}
 		</SafeAreaView>
 	);
 }

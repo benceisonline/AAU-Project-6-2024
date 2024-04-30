@@ -2,18 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, View, Text, Image, Dimensions, TouchableOpacity } from 'react-native';
 import { layout, globalStyles } from '../GlobalStyles';
+import { trackStartReading } from '../utils/AsyncFunctions';
 import PropTypes from 'prop-types';
 
 const { height } = Dimensions.get('window');
 
-export default function NewsCard({ article, userID, scrollPercentage }) {
+export default function NewsCard({ article, scrollPercentage, articlesInView}) {
 	const journalistName = "Lasse Claes";
 	const navigation = useNavigation();
 	const thumbnailHeight = height * 0.2;
 	const journalistImageSize = height * 0.05;
   
 	const handleOnPress = async () => {
-		navigation.navigate('Article', { article: article });
+		trackStartReading();
+		navigation.navigate('Article', { article: article, articlesInView: articlesInView });
 	}
   
 	// Dynamically adjusting red line
