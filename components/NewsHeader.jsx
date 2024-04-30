@@ -18,7 +18,7 @@ const SubViewTitles = [
   }
 ]
 
-export default function NewsHeader({ onPressedSubView }) {
+export default function NewsHeader({ onPressedSubView, onPressedLogo }) {
   const { height } = Dimensions.get('window');
   const [activeSubView, setActiveSubView]  = useState(1);
 

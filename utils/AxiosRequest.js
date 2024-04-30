@@ -10,6 +10,7 @@ export const fetchPredictions = async (userId, startIndex, noOfRecommendations) 
 		no_recommendations: noOfRecommendations,
 	};
 
+
 	try {
 		const response = await axios.post(apiUrl + '/predict', requestData, {
 			headers: {

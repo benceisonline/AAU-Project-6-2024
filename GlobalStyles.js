@@ -55,10 +55,13 @@ export const globalStyles = StyleSheet.create({
 		color: '#7A7373'
 	},
 	bodyText: {
-		fontSize: 16.5,
+		fontFamily: 'Calicanto-Regular',
+		fontSize: 17.5,
 	},
 	articleTitle: {
-		fontSize: 24,
+		fontFamily: "EuropaGroteskSH-Regular",
+		letterSpacing: 0.8,
+		fontSize: 34,
 	},
 	horizontalRedLine: {
 		backgroundColor: 'red',

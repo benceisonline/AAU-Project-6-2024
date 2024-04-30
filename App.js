@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar, Text } from 'react-native';
 import { useFonts } from "expo-font";
+import { createUserId } from './utils/AsyncStorage';
 
 // News Screens
 import NewsFeedScreen from './screens/NewsFeed';
@@ -30,8 +31,8 @@ function NewsStackScreens() {
 }
 
 export default function App() {
-	createSessionId();
-
+	createUserId();
+  createSessionId();
 	const [fontsLoaded] = useFonts({
 		"WorkSans-Regular": require("./assets/fonts/WorkSans-Regular.ttf"),
 		"WorkSans-Medium": require("./assets/fonts/WorkSans-Medium.ttf"),
@@ -39,6 +40,8 @@ export default function App() {
 		"Karla-Medium": require("./assets/fonts/Karla-Medium.ttf"),
 		"InterTight-SemiBold": require("./assets/fonts/InterTight-SemiBold.ttf"),
 		"InterTight-Bold": require("./assets/fonts/InterTight-Bold.ttf"),
+		"Calicanto-Regular": require("./assets/fonts/Calicanto-Regular.ttf"),
+		"EuropaGroteskSH-Regular": require("./assets/fonts/EuropaGroteskSH-Reg.otf"),
 	});
 	if (!fontsLoaded) {
 	return <Text>Loading...</Text>;
