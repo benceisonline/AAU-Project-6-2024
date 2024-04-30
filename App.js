@@ -1,4 +1,5 @@
 import React from 'react'; 
+import { createSessionId } from './utils/AsyncFunctions';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar, Text } from 'react-native';
@@ -14,23 +15,24 @@ const NewsStack = createNativeStackNavigator();
 
 function NewsStackScreens() {
 	return (
-		<NewsStack.Navigator initialRouteName={"NewsFeed"} >
-			<NewsStack.Screen
-				name="NewsFeed"
-				component={ NewsFeedScreen }
-				options={{ headerShown: false }}
-			/>
-			<NewsStack.Screen
-				name="Article"
-				component={ ArticleScreen }
-				options={{ headerShown: false }}
-			/>
-		</NewsStack.Navigator>
+			<NewsStack.Navigator initialRouteName={"NewsFeed"} >
+				<NewsStack.Screen
+					name="NewsFeed"
+					component={ NewsFeedScreen }
+					options={{ headerShown: false }}
+				/>
+				<NewsStack.Screen
+					name="Article"
+					component={ ArticleScreen }
+					options={{ headerShown: false }}
+				/>
+			</NewsStack.Navigator>
 	);
 }
 
 export default function App() {
 	createUserId();
+  createSessionId();
 	const [fontsLoaded] = useFonts({
 		"WorkSans-Regular": require("./assets/fonts/WorkSans-Regular.ttf"),
 		"WorkSans-Medium": require("./assets/fonts/WorkSans-Medium.ttf"),

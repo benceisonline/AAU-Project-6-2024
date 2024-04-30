@@ -8,6 +8,7 @@ import Error from '../components/Error';
 import { fetchPredictions, fetchAllArticles } from '../utils/AxiosRequest';
 import ERRORACTIONS from '../constants/ErrorActions';
 import SplashScreen from '../components/SplashScreen'; 
+import { onGoBackFromArticle, removeGoBackFromArticle } from '../utils/Events';
 
 export default function NewsFeedScreen() {
   const scrollViewRef = useRef(null);
@@ -16,10 +17,12 @@ export default function NewsFeedScreen() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [clickedArticleIds, setClickedArticleIds] = useState([]);
+  const [scrollPercentages, setScrollPercentages] = useState([]);
   const loadingTimeout = 2000;
   const userID = "1812344"; 
   const distanceToBottom = 500;
-
+  
   const fetchData = async (loadMore) => {
     setWaiting(true);
 
@@ -69,25 +72,42 @@ export default function NewsFeedScreen() {
     }
   };
 
-  const handleRefresh = async () => {
-    setIsRefreshing(true);
-    await fetchData(false);
-    setIsRefreshing(false);
-  };
+	const handleRefresh = async () => {
+		setIsRefreshing(true);
+		await fetchData(false);
+		setIsRefreshing(false);
+	};
 
 	const handleLoadMore = async (event) => {
 		const { layoutMeasurement, contentSize, contentOffset } = event.nativeEvent;
     // Fetch more articles when user has scrolled almost to the bottom of the screen
 		const isAtBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height - distanceToBottom;
 
-    if (isAtBottom) {
-      await fetchData(true);
-    }
-  }
+		if (isAtBottom) {
+			await fetchData(true);
+		}
+	}
 
-  const onPressedSubView = (id) => {
-    setSubview(id);
-  };
+	const onPressedSubView = (id) => {
+		setSubview(id);
+	};
+
+  const handleGoBackFromArticle = (data) => {
+    setClickedArticleIds(prevClickedArticles => {
+			if (prevClickedArticles.includes(data.clicked_article_id)) {
+				return prevClickedArticles;
+			}
+
+			return [...prevClickedArticles, data.clicked_article_id];
+		});
+    setScrollPercentages(prevScrollPercentages => {
+			if (prevScrollPercentages.includes(data.scroll_percentage)) {
+				return prevScrollPercentages;
+			}
+
+			return [...prevScrollPercentages, data.scroll_percentage];
+		});
+  }
 
   const onPressedLogo = () => {
     if (scrollViewRef.current) {
@@ -96,29 +116,35 @@ export default function NewsFeedScreen() {
   }
 
   useEffect(() => {
-    fetchData(false);
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-  }, [subview]);
-  
-  if (loading) {
-    return <SplashScreen />;
-  }
+		fetchData(false);
 
-  if (!articles || articles.length === 0) {
+    onGoBackFromArticle(handleGoBackFromArticle);
+
+		setTimeout(() => {
+			setLoading(false);
+		}, 2000);
+
+    return () => {
+      removeGoBackFromArticle(handleGoBackFromArticle);
+    };
+	}, [subview]);
+  
+	if (loading) {
+		return <SplashScreen />;
+	}
+
+	if (!articles || articles.length === 0) {
 		return (
 			<Error errorText={'Artiklerne blev ikke fundet.'} action={ERRORACTIONS.REFRESH} />
 		);
 	}
 
-  return (
-    <SafeAreaView style={ styles.container }>
-      <NewsHeader onPressedSubView={onPressedSubView} onPressedLogo={onPressedLogo} />
+	return (
+		<SafeAreaView style={ styles.container }>
+			<NewsHeader onPressedSubView={onPressedSubView} onPressedLogo={onPressedLogo} />
       {waiting && <BouncingLogo />}
       {!waiting && (
-        <ScrollView 
-          ref={scrollViewRef}
+        <ScrollView
           style={ styles.feed } 
           showsVerticalScrollIndicator={false} 
           showsHorizontalScrollIndicator={false}
@@ -126,21 +152,34 @@ export default function NewsFeedScreen() {
           scrollEventThrottle={200}
           refreshControl={
             <RefreshControl
-                color={'#E3141D'}
-                tintColor={'#E3141D'}
-                title='Opdaterer...'
-                refreshing={isRefreshing}
-                onRefresh={handleRefresh}
+              color={'#E3141D'}
+              tintColor={'#E3141D'}
+              title='Opdaterer...'
+              refreshing={isRefreshing}
+              onRefresh={handleRefresh}
             />
           }
-        >
-          {articles.map((article) => (
-            <NewsCard key={article.article_id} article={article} />
-          ))}
-        </ScrollView>
-      )}
-    </SafeAreaView>
-  );
+			  >
+				{articles.map((article) => {
+					let scrollPercentage = 0;
+					if (clickedArticleIds !== null) {
+						const index = clickedArticleIds.indexOf(article.article_id);
+						scrollPercentage = index !== -1 ? scrollPercentages[index] : 0;
+					}
+
+					return (
+						<NewsCard 
+							key={article.article_id} 
+							article={article} 
+							userID={userID}
+							scrollPercentage={scrollPercentage}
+							articlesInView={articles}
+						/>
+					);
+        })}
+			</ScrollView>
+		</SafeAreaView>
+	);
 }
 
 const styles = StyleSheet.create({

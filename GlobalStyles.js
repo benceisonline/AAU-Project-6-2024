@@ -63,6 +63,12 @@ export const globalStyles = StyleSheet.create({
 		letterSpacing: 0.8,
 		fontSize: 34,
 	},
+	horizontalRedLine: {
+		backgroundColor: 'red',
+		borderRadius: 5,
+		height: 4,
+		position: 'absolute',
+	}
 });
 
 export const colors = {
@@ -94,6 +100,10 @@ export const layout = StyleSheet.create({
 	flexRow: {
 		display: 'flex', 
 		flexDirection: 'row'
+	},
+	reverseFlexRow: {
+		display: 'flex', 
+		flexDirection: 'row-reverse'
 	},
 	centeredRow: {  
 		display: 'flex', 
