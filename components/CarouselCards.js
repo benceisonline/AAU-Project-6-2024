@@ -1,45 +1,37 @@
-import React, { useEffect, useState } from 'react'
-import { View } from "react-native"
+import React, { useEffect, useState, useRef } from 'react'
+import { View, TouchableOpacity } from "react-native"
 import Carousel from 'react-native-snap-carousel'
 import CarouselCardItem, { SLIDER_WIDTH, ITEM_WIDTH } from './CarouselCardItem'
-import { fetchPredictions } from '../utils/AxiosRequest';
+import { useNavigation } from '@react-navigation/native';
 
-const userID = "1078040";
+export default function CarouselCards ({ articles }) {
+  const carouselRef = useRef(null);
+  const navigation = useNavigation();
 
-const CarouselCards = () => {
-  const isCarousel = React.useRef(null)
-
-  const [ data, setData ] = useState([]);
-
-  const fetchData = async () => {
-    try {
-      const data = await fetchPredictions(userID, 10);
-      setData(data.news);
-    } catch (error) {
-      console.error('Error fetching articles:', error);
-    }
-  };
-
-  fetchData();
+  _renderItem = ({ item }) => {
+    return (
+      <CarouselCardItem
+        data={item}
+        navigation={navigation}
+        articles={articles}
+      />
+    );
+  }
 
   return (
     <View>
       <Carousel
-        layout="tinder"
-        layoutCardOffset={9}
-        ref={isCarousel}
-        data={data}
-        renderItem={CarouselCardItem}
+        ref={carouselRef}
+        layout="stack"
+        layoutCardOffset={7}
+        data={articles}
+        renderItem={this._renderItem}
         sliderWidth={SLIDER_WIDTH}
         itemWidth={ITEM_WIDTH}
-        itemHeight={350}
-        sliderHeight={300}
-        inactiveSlideShift={0}
+        itemHeight={400}
+        sliderHeight={400}
         vertical={true}
-    />
+      />
     </View>
   )
 }
-
-
-export default CarouselCards

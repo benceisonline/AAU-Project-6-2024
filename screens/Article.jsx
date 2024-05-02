@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import PlusIndicator from '../components/PlusIndicator';
 import { storeUserData } from '../utils/AsyncFunctions';
 import { emitGoBackFromArticle } from '../utils/Events';
+import CarouselCards from '../components/CarouselCards';
 
 const { height } = Dimensions.get('window');
 
@@ -98,6 +99,13 @@ export default function Article({ route }) {
 					{renderedParagraphs}
 
 				</View>
+				<View style={styles.bottomBox}/>
+				<View style={styles.nextArticles}>
+					<Text style={styles.nextArticlesHeader}>Anbefalet til dig</Text>
+					<CarouselCards
+					articles={articlesInView}
+					/>
+				</View>
 			</ScrollView>
 		</SafeAreaView>
 	);
@@ -158,5 +166,18 @@ const styles = StyleSheet.create({
 		left: 0,
 		right: 0,
 		marginTop: '4.5%',
-	},	 
+	},
+	nextArticles: {
+		alignItems: 'center',
+		marginTop: '5%',
+	},
+	nextArticlesHeader: {
+		...globalStyles.headline,
+		alignSelf: 'flex-start',
+		marginBottom: '5%',
+		paddingHorizontal: '4%',
+	},
+	bottomBox: {
+
+	},
 });
