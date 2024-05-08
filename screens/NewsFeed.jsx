@@ -24,8 +24,6 @@ export default function NewsFeedScreen() {
   const distanceToBottom = 500;
   
   const fetchData = async (loadMore) => {
-    setWaiting(true);
-
     try {
       let data;
       switch (subview) {
@@ -41,6 +39,8 @@ export default function NewsFeedScreen() {
           break;
       };
 
+			setWaiting(false);
+
       if (loadMore) {
         setArticles(prevArticles => {
           let existingArticlesIds = prevArticles.map(article => article.article_id);
@@ -55,8 +55,6 @@ export default function NewsFeedScreen() {
       } else {
         setArticles(data.news);
       }
-
-      setWaiting(false);
       
       // Set loading to false after fetching articles, but wait at least 2000ms
       if (loading) {
@@ -89,6 +87,7 @@ export default function NewsFeedScreen() {
 	}
 
 	const onPressedSubView = (id) => {
+		setWaiting(true);
 		setSubview(id);
 	};
 
@@ -142,40 +141,41 @@ export default function NewsFeedScreen() {
 	return (
 		<SafeAreaView style={ styles.container }>
 			<NewsHeader onPressedSubView={onPressedSubView} onPressedLogo={onPressedLogo} />
-			{waiting && <BouncingLogo />}
-			{!waiting && (
-				<ScrollView
-				style={ styles.feed } 
-				showsVerticalScrollIndicator={false} 
-				showsHorizontalScrollIndicator={false}
-				onScroll={handleLoadMore}
-				scrollEventThrottle={200}
-				refreshControl={
-					<RefreshControl
-					color={'#E3141D'}
-					tintColor={'#E3141D'}
-					title='Opdaterer...'
-					refreshing={isRefreshing}
-					onRefresh={handleRefresh}
-					/>
-				}
+      {waiting && <BouncingLogo />}
+      {!waiting && (
+        <ScrollView
+          style={ styles.feed } 
+          showsVerticalScrollIndicator={false} 
+          showsHorizontalScrollIndicator={false}
+          onScroll={handleLoadMore}
+          scrollEventThrottle={200}
+          refreshControl={
+            <RefreshControl
+              color={'#E3141D'}
+              tintColor={'#E3141D'}
+              title='Opdaterer...'
+              refreshing={isRefreshing}
+              onRefresh={handleRefresh}
+            />
+          }
 				>
-				{articles.map((article) => {
-					let scrollPercentage = 0;
-					if (clickedArticleIds !== null) {
-						const index = clickedArticleIds.indexOf(article.article_id);
-						scrollPercentage = index !== -1 ? scrollPercentages[index] : 0;
-					}
+					{articles.map((article) => {
+						let scrollPercentage = 0;
+						if (clickedArticleIds !== null) {
+							const index = clickedArticleIds.indexOf(article.article_id);
+							scrollPercentage = index !== -1 ? scrollPercentages[index] : 0;
+						}
 
-					return (
-						<NewsCard 
-							key={article.article_id} 
-							article={article}
-							scrollPercentage={scrollPercentage}
-							articlesInView={articles}
-						/>
-					);
-        		})}
+						return (
+							<NewsCard 
+								key={article.article_id} 
+								article={article} 
+								userID={userID}
+								scrollPercentage={scrollPercentage}
+								articlesInView={articles}
+							/>
+						);
+					})}
 				</ScrollView>
 			)}
 		</SafeAreaView>
