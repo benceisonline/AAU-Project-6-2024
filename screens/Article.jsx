@@ -62,6 +62,12 @@ export default function Article({ route }) {
 		);
 	});
 
+	scrollParentToTop = () => {
+		if (this.scrollViewRef) {
+		  this.scrollViewRef.scrollTo({ y: 0, animated: true });
+		}
+	};
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<View style={styles.header}>
@@ -77,6 +83,7 @@ export default function Article({ route }) {
 				<View style={[styles.horizontalRedLine, { width: 0 }]} />
 			)}
 			<ScrollView
+				ref={(ref) => { this.scrollViewRef = ref; }}
 				showsVerticalScrollIndicator={false} 
 				showsHorizontalScrollIndicator={false}
 				onScroll={handleScroll}
@@ -104,6 +111,7 @@ export default function Article({ route }) {
 					<Text style={styles.nextArticlesHeader}>Anbefalet til dig</Text>
 					<CarouselCards
 					articles={articlesInView}
+					scrollParentToTop={this.scrollParentToTop}
 					/>
 				</View>
 			</ScrollView>
@@ -170,6 +178,7 @@ const styles = StyleSheet.create({
 	nextArticles: {
 		alignItems: 'center',
 		marginTop: '5%',
+		zIndex: 1000,
 	},
 	nextArticlesHeader: {
 		...globalStyles.headline,
