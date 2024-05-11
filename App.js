@@ -6,6 +6,8 @@ import { StatusBar, Text } from 'react-native';
 import { useFonts } from "expo-font";
 import { createUserId } from './utils/AsyncStorage';
 
+import 'react-native-reanimated'; // Required for react-navigation
+
 // News Screens
 import NewsFeedScreen from './screens/NewsFeed';
 import ArticleScreen from './screens/Article';
