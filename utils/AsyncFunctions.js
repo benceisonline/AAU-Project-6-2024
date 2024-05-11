@@ -313,10 +313,15 @@ const storeUserHistory = async (history) => {
 };
 
 const storeUserHistoryInDB = async (history) => {
-	if (await doesUserHistoryExists(history.user_id)) {
-		updateUserHistoryInDB(history);
-		return;
-	}
+	try {
+		if (await doesUserHistoryExists(history.user_id)) {
+			updateUserHistoryInDB(history);
+			return;
+		}
+	} catch (error) {
+		// Handle the error here
+		console.error("Error checking user history:", error);
+	}	
 
 	const { data, error } = await supabase
 		.from('History')
