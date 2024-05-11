@@ -68,6 +68,9 @@ export default function Article({ route }) {
 		}
 	};
 
+	useEffect(() => {
+	}, []);
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<View style={styles.header}>
