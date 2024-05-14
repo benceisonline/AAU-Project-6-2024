@@ -38,7 +38,7 @@ export const fetchAllArticles = async (startIndex, noOfRecommendations) => {
 		});
 
 		return response.data;
-  } catch (error) {
-    throw error.response ? error.response.data : error.message;
-  }
+	} catch (error) {
+		throw error.response ? error.response.data : error.message;
+	}
 }

@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 
 const { height } = Dimensions.get('window');
 
-export default function NewsCard({ article, userID, scrollPercentage, articlesInView}) {
+export default function NewsCard({ article, scrollPercentage, articlesInView}) {
 	const journalistName = "Lasse Claes";
 	const navigation = useNavigation();
 	const thumbnailHeight = height * 0.2;
