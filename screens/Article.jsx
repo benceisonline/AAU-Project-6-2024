@@ -19,6 +19,8 @@ export default function Article({ route }) {
 	const [scrollPercentage, setScrollPercentage] = useState(0);
 	const [scrollHeight, setScrollHeight] = useState(0);
 	const journalistName = "Lasse Claes";
+	let paragraphs;
+	let renderedParagraphs;
 
 	// Update scroll percentage on scroll
 	const handleScroll = (event) => {
@@ -45,22 +47,23 @@ export default function Article({ route }) {
 		return(
 			<Error errorText={'Artiklen blev ikke fundet'} action={ERRORACTIONS.BACK}/>
 		);
+	} else {
+		paragraphs = article.body.split('\n');
+	
+		renderedParagraphs = paragraphs.map((paragraph, index) => {
+			if (paragraph.includes('--------- SPLIT ELEMENT ---------')) {
+				return null; // Skip rendering this paragraph
+			}
+	
+			return (
+				<Text key={index} style={globalStyles.bodyText}>
+					{paragraph}
+					{'\n'} {/* Adding an extra newline character at the end of each paragraph */}
+				</Text>
+			);
+		});
 	}
-
-	const paragraphs = article.body.split('\n');
-
-	const renderedParagraphs = paragraphs.map((paragraph, index) => {
-		if (paragraph.includes('--------- SPLIT ELEMENT ---------')) {
-			return null; // Skip rendering this paragraph
-		}
-
-		return (
-			<Text key={index} style={globalStyles.bodyText}>
-				{paragraph}
-				{'\n'} {/* Adding an extra newline character at the end of each paragraph */}
-			</Text>
-		);
-	});
+	
 
 	scrollParentToTop = () => {
 		if (this.scrollViewRef) {
@@ -72,53 +75,55 @@ export default function Article({ route }) {
 	}, []);
 
 	return (
-		<SafeAreaView style={styles.container}>
-			<View style={styles.header}>
-				<TouchableOpacity style={styles.headerMenu} onPress={handleOnBack}>
-					<Ionicons name="arrow-back" size={height * 0.04} color="black" />
-					<Text style={globalStyles.headline}>Artikler</Text>
-				</TouchableOpacity>
-				<PlusIndicator isActive={true} />
-			</View>
-			{scrollPercentage > 0 ? (
-				<View style={[styles.horizontalRedLine, horizontalRedLineStyles]} />
-			) : (
-				<View style={[styles.horizontalRedLine, { width: 0 }]} />
-			)}
-			<ScrollView
-				ref={(ref) => { this.scrollViewRef = ref; }}
-				showsVerticalScrollIndicator={false} 
-				showsHorizontalScrollIndicator={false}
-				onScroll={handleScroll}
-				scrollEventThrottle={16} // Adjust the throttle value as needed
-			>
-				<Image source={{ uri: article.image_url }} style={styles.cover} />
+	<>
+		{article && (
+			<SafeAreaView style={styles.container}>
+				<View style={styles.header}>
+					<TouchableOpacity style={styles.headerMenu} onPress={handleOnBack}>
+						<Ionicons name="arrow-back" size={height * 0.04} color="black" />
+						<Text style={globalStyles.headline}>Artikler</Text>
+					</TouchableOpacity>
+					<PlusIndicator isActive={true} />
+				</View>
+				{scrollPercentage > 0 ? (
+					<View style={[styles.horizontalRedLine, horizontalRedLineStyles]} />
+				) : (
+					<View style={[styles.horizontalRedLine, { width: 0 }]} />
+				)}
+				<ScrollView
+					ref={(ref) => { this.scrollViewRef = ref; }}
+					showsVerticalScrollIndicator={false} 
+					showsHorizontalScrollIndicator={false}
+					onScroll={handleScroll}
+					scrollEventThrottle={16} // Adjust the throttle value as needed
+				>
+					<Image source={{ uri: article.image_url }} style={styles.cover} />
 
-				<View style={styles.content}>
-					<Text style={styles.articleTitle}>
-						{ article.title }
-					</Text>
-
-					<View style={styles.authorContainer}>
-						<Text>Af </Text>
-						<Text style={styles.authorName}>
-							{ journalistName }
+					<View style={styles.content}>
+						<Text style={styles.articleTitle}>
+							{ article.title }
 						</Text>
+
+						<View style={styles.authorContainer}>
+							<Text>Af </Text>
+							<Text style={styles.authorName}>
+								{ journalistName }
+							</Text>
+						</View>
+						{renderedParagraphs}
 					</View>
-
-					{renderedParagraphs}
-
-				</View>
-				<View style={styles.bottomBox}/>
-				<View style={styles.nextArticles}>
-					<Text style={styles.nextArticlesHeader}>Anbefalet til dig</Text>
-					<CarouselCards
-					articles={articlesInView}
-					scrollParentToTop={this.scrollParentToTop}
-					/>
-				</View>
-			</ScrollView>
-		</SafeAreaView>
+					<View style={styles.bottomBox}/>
+					<View style={styles.nextArticles}>
+						<Text style={styles.nextArticlesHeader}>Anbefalet til dig</Text>
+						<CarouselCards
+						articles={articlesInView}
+						scrollParentToTop={this.scrollParentToTop}
+						/>
+					</View>
+				</ScrollView>
+			</SafeAreaView>
+		)}
+	</>
 	);
 }
 
