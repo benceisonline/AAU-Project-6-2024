@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; 
+import React, { useState, useEffect, useRef } from 'react'; 
 import { Image, View, Text, StyleSheet, SafeAreaView, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import PlusIndicator from '../components/PlusIndicator';
 import { storeUserData } from '../utils/AsyncFunctions';
 import { emitGoBackFromArticle } from '../utils/Events';
+import CarouselCards from '../components/CarouselCards';
 
 const { height } = Dimensions.get('window');
 
@@ -17,6 +18,7 @@ export default function Article({ route }) {
 	const { article, articlesInView } = route.params;
 	const [scrollPercentage, setScrollPercentage] = useState(0);
 	const [scrollHeight, setScrollHeight] = useState(0);
+	const scrollViewRef = useRef();
 	const journalistName = "Lasse Claes";
 
 	// Update scroll percentage on scroll
@@ -31,9 +33,6 @@ export default function Article({ route }) {
 	const horizontalRedLineStyles = {
 		width: `${scrollPercentage}%`,
 	};
-
-	useEffect(() => {
-	}, []);
 
 	// Save read time, scroll percentage, and other data when navigating away from the article
 	const handleOnBack = async () => {
@@ -64,6 +63,16 @@ export default function Article({ route }) {
 		);
 	});
 
+	scrollParentToTop = () => {
+		if (this.scrollViewRef) {
+			this.scrollViewRef.scrollTo({ y: 0, animated: true });
+		}
+	};
+
+	useEffect(() => {
+
+	}, []);
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<View style={styles.header}>
@@ -79,6 +88,7 @@ export default function Article({ route }) {
 				<View style={[styles.horizontalRedLine, { width: 0 }]} />
 			)}
 			<ScrollView
+				ref={scrollViewRef}
 				showsVerticalScrollIndicator={false} 
 				showsHorizontalScrollIndicator={false}
 				onScroll={handleScroll}
@@ -100,6 +110,16 @@ export default function Article({ route }) {
 
 					{renderedParagraphs}
 
+				</View>
+
+				<View style={styles.bottomBox}/>
+
+				<View style={styles.nextArticles}>
+					<Text style={styles.nextArticlesHeader}>Anbefalet til dig</Text>
+					<CarouselCards
+					articles={articlesInView}
+					scrollParentToTop={this.scrollParentToTop}
+					/>
 				</View>
 			</ScrollView>
 		</SafeAreaView>
@@ -161,5 +181,19 @@ const styles = StyleSheet.create({
 		left: 0,
 		right: 0,
 		marginTop: '4.5%',
-	},	 
+	},
+	nextArticles: {
+		alignItems: 'center',
+		marginTop: '5%',
+		zIndex: 1000,
+	},
+	nextArticlesHeader: {
+		...globalStyles.headline,
+		alignSelf: 'flex-start',
+		marginBottom: '5%',
+		paddingHorizontal: '4%',
+	},
+	bottomBox: {
+
+	},
 });
