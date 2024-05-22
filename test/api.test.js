@@ -1,6 +1,7 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { fetchPredictions, fetchAllArticles, apiUrl } from '../utils/AxiosRequest';
+import { fetchPredictions, fetchAllArticles } from '../utils/AxiosRequest';
+import { LOCAL_URL } from '@env'
 
 const mock = new MockAdapter(axios);
 
@@ -15,7 +16,7 @@ describe('fetchPredictions', () => {
     const noOfRecommendations = 5;
     const responseData = [{ article_id: 1, title: 'Test Article' }];
 
-    mock.onPost(`${apiUrl}/predict`, {
+    mock.onPost(`${LOCAL_URL}/predict`, {
       user_id: userId,
       start_index: startIndex,
       no_recommendations: noOfRecommendations,
@@ -31,7 +32,7 @@ describe('fetchPredictions', () => {
     const noOfRecommendations = 5;
     const expectedErrorMsg = 'Request failed with status code 404';
 
-    mock.onPost(`${apiUrl}/predict`).reply(404, expectedErrorMsg);
+    mock.onPost(`${LOCAL_URL}/predict`).reply(404, expectedErrorMsg);
 
     try {
       await fetchPredictions(userId, startIndex, noOfRecommendations);
@@ -51,7 +52,7 @@ describe('fetchAllArticles', () => {
     const noOfRecommendations = 5;
     const responseData = [{ article_id: 1, title: 'Test Article' }];
 
-    mock.onPost(`${apiUrl}/all`, {
+    mock.onPost(`${LOCAL_URL}/all`, {
       start_index: startIndex,
       no_recommendations: noOfRecommendations,
     }).reply(200, responseData);
@@ -65,7 +66,7 @@ describe('fetchAllArticles', () => {
     const noOfRecommendations = 5;
     const expectedErrorMsg = 'Request failed with status code 404';
 
-    mock.onPost(`${apiUrl}/all`).reply(404, expectedErrorMsg);
+    mock.onPost(`${LOCAL_URL}/all`).reply(404, expectedErrorMsg);
 
     await expect(fetchAllArticles(startIndex, noOfRecommendations)).rejects.toThrow(expectedErrorMsg);
   });

@@ -2,17 +2,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   storeUserIdInDb,
   storeSessionIdInDB,
-  storeBehaviorInDB,
-  storeOrUpdateUserHistory,
-  storePreppedDataForModelInDB
 } from '../utils/DatabaseFunctions';
 import {
   createUserId,
   fetchUserId,
   createSessionId,
-  storeUserData,
   trackStartReading,
-  trackEndReading,
   getCurrentTimestamp
 } from '../utils/AsyncFunctions';
 
