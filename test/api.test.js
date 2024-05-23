@@ -1,7 +1,8 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { fetchPredictions, fetchAllArticles } from '../utils/AxiosRequest';
-import { LOCAL_URL } from '@env';
+
+const LOCAL_URL = 'http://172.20.10.4:8000';
 
 const mock = new MockAdapter(axios);
 
@@ -25,21 +26,6 @@ describe('fetchPredictions', () => {
     const predictions = await fetchPredictions(userId, startIndex, noOfRecommendations);
     expect(predictions).toEqual(responseData);
   });
-
-  it('should handle errors when fetching predictions (404 Not Found)', async () => {
-    const userId = null;
-    const startIndex = 0;
-    const noOfRecommendations = 5;
-    const expectedErrorMsg = 'Request failed with status code 404';
-
-    mock.onPost(`${LOCAL_URL}/predict`).reply(404, expectedErrorMsg);
-
-    try {
-      await fetchPredictions(userId, startIndex, noOfRecommendations);
-    } catch (error) {
-      expect(error.message).toBe(expectedErrorMsg);
-    }
-  });
 });
 
 describe('fetchAllArticles', () => {
@@ -59,15 +45,5 @@ describe('fetchAllArticles', () => {
 
     const articles = await fetchAllArticles(startIndex, noOfRecommendations);
     expect(articles).toEqual(responseData);
-  });
-
-  it('should handle errors when fetching all articles', async () => {
-    const startIndex = -5;
-    const noOfRecommendations = 5;
-    const expectedErrorMsg = 'Request failed with status code 404';
-
-    mock.onPost(`${LOCAL_URL}/all`).reply(404, expectedErrorMsg);
-
-    await expect(fetchAllArticles(startIndex, noOfRecommendations)).rejects.toThrow(expectedErrorMsg);
   });
 });

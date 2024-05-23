@@ -1,5 +1,6 @@
 const axios = require('axios').default;
-import Constants from 'expo-constants';
+
+const LOCAL_URL = 'http://172.20.10.4:8000';
 
 export const fetchPredictions = async (userId, startIndex, noOfRecommendations) => {
 	const requestData = {
@@ -10,7 +11,7 @@ export const fetchPredictions = async (userId, startIndex, noOfRecommendations) 
 
 
 	try {
-		const response = await axios.post(Constants.expoConfig.extra.LOCAL_URL + '/predict', requestData, {
+		const response = await axios.post(LOCAL_URL + '/predict', requestData, {
 			headers: {
 				'Content-Type': 'application/json',
 			},
@@ -29,7 +30,7 @@ export const fetchAllArticles = async (startIndex, noOfRecommendations) => {
 	};
 
   try {
-    const response = await axios.post(Constants.expoConfig.extra.LOCAL_URL + '/all', requestData, {
+    const response = await axios.post(LOCAL_URL + '/all', requestData, {
 			headers: {
 				'Content-Type': 'application/json',
 			},

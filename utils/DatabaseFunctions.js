@@ -6,7 +6,7 @@ export const storeUserIdInDb = async () => {
     .insert({ created_ay: new Date() })
 
   if (error)
-    throw new error;
+    throw new Error(error);
 
   return data[0].user_id;
 }
@@ -17,7 +17,7 @@ export const storeSessionIdInDB = async (userId) => {
     .insert({ user_id: userId, created_at: new Date() })
 
   if (error)
-    throw new error;
+    throw new Error(error);
 
   return data[0].session_id;
 }
@@ -37,7 +37,7 @@ export const storeBehaviorInDB = async (behavior) => {
     .insert([behavior])
 
   if (error) {
-    throw new error;
+    throw new Error(error);
   }
 }
 
@@ -47,7 +47,7 @@ export const storeUserHistoryInDB = async (history) => {
 		.insert([history]);
 
 	if (error)
-		throw new error;
+		throw new Error(error);
 }
 
 export const updateUserHistoryInDB = async (history) => {
@@ -57,7 +57,7 @@ export const updateUserHistoryInDB = async (history) => {
 		.update([history]);
 
 	if (error)
-		throw new error;
+		throw new Error(error);
 }
 
 export const doesUserHistoryExists = async (userId) => {
@@ -67,7 +67,7 @@ export const doesUserHistoryExists = async (userId) => {
 		.select('user_id');
 
   if (error)
-    throw new error;
+    throw new Error(error);
 
   return data[0].user_id === userId;
 }
@@ -91,5 +91,5 @@ export const storePreppedDataForModelInDB = async (modelData) => {
 			.insert([modelData]);
 
 	if (error) 
-		throw new error;
+		throw new Error(error);
 }
