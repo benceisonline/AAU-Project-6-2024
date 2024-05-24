@@ -71,9 +71,7 @@ export default function Article({ route }) {
 		}
 	};
 
-	useEffect(() => {
-
-	}, []);
+	useEffect(() => {}, []);
 
 	return (
 		<>

@@ -8,6 +8,8 @@ import { createUserId } from './utils/AsyncFunctions';
 
 import 'react-native-reanimated'; // Required for react-navigation
 
+import 'react-native-reanimated'; // Required for react-navigation
+
 // News Screens
 import NewsFeedScreen from './screens/NewsFeed';
 import ArticleScreen from './screens/Article';
