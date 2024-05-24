@@ -64,7 +64,6 @@ export default function Article({ route }) {
 		});
 	}
 	
-
 	scrollParentToTop = () => {
 		if (this.scrollViewRef) {
 		  this.scrollViewRef.scrollTo({ y: 0, animated: true });
