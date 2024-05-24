@@ -63,10 +63,10 @@ export default function NewsFeedScreen() {
         }, loadingTimeout);
       }
     } catch (error) {
-      console.error('Error fetching articles:', error);
       // Handle error appropriately, e.g., set loading to false
 			setLoading(false);
       setWaiting(false);
+      throw new Error('Error fetching articles:', error);
     }
   };
 
