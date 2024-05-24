@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; 
+import React, { useState, useEffect, useRef } from 'react'; 
 import { Image, View, Text, StyleSheet, SafeAreaView, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -18,6 +18,7 @@ export default function Article({ route }) {
 	const { article, articlesInView } = route.params;
 	const [scrollPercentage, setScrollPercentage] = useState(0);
 	const [scrollHeight, setScrollHeight] = useState(0);
+	const scrollViewRef = useRef();
 	const journalistName = "Lasse Claes";
 	let paragraphs;
 	let renderedParagraphs;
@@ -49,12 +50,12 @@ export default function Article({ route }) {
 		);
 	} else {
 		paragraphs = article.body.split('\n');
-	
+
 		renderedParagraphs = paragraphs.map((paragraph, index) => {
 			if (paragraph.includes('--------- SPLIT ELEMENT ---------')) {
 				return null; // Skip rendering this paragraph
 			}
-	
+
 			return (
 				<Text key={index} style={globalStyles.bodyText}>
 					{paragraph}
@@ -63,18 +64,17 @@ export default function Article({ route }) {
 			);
 		});
 	}
-	
+
 	scrollParentToTop = () => {
 		if (this.scrollViewRef) {
-		  this.scrollViewRef.scrollTo({ y: 0, animated: true });
+			this.scrollViewRef.scrollTo({ y: 0, animated: true });
 		}
 	};
 
-	useEffect(() => {
-	}, []);
+	useEffect(() => {}, []);
 
 	return (
-	<>
+		<>
 		{article && (
 			<SafeAreaView style={styles.container}>
 				<View style={styles.header}>

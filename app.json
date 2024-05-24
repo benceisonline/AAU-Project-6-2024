@@ -25,6 +25,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "SUPABASE_URL": "INSERT HERE",
+      "SUPABASE_ANON_KEY": "INSERT HERE",
+      "LOCAL_URL": "INSERT HERE"
     }
   }
 }
