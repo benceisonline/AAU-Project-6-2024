@@ -1,4 +1,4 @@
-import React from 'react'; 
+import React, { useState, useEffect } from 'react'; 
 import { Image, View, Text, StyleSheet, SafeAreaView, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -7,68 +7,122 @@ import ERRORACTIONS from '../constants/ErrorActions';
 import Error from '../components/Error';
 import PropTypes from 'prop-types';
 import PlusIndicator from '../components/PlusIndicator';
+import { storeUserData } from '../utils/AsyncFunctions';
+import { emitGoBackFromArticle } from '../utils/Events';
+import CarouselCards from '../components/CarouselCards';
 
 const { height } = Dimensions.get('window');
 
 export default function Article({ route }) {
-	const journalistName = "Lasse Claes";
 	const navigation = useNavigation();
-	const { article } = route.params;
+	const { article, articlesInView } = route.params;
+	const [scrollPercentage, setScrollPercentage] = useState(0);
+	const [scrollHeight, setScrollHeight] = useState(0);
+	const journalistName = "Lasse Claes";
+	let paragraphs;
+	let renderedParagraphs;
+
+	// Update scroll percentage on scroll
+	const handleScroll = (event) => {
+		const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
+		const currentScrollHeight = contentSize.height - layoutMeasurement.height;
+		const currentScrollPercentage = (contentOffset.y / currentScrollHeight) * 100;
+		setScrollHeight(currentScrollHeight);
+		setScrollPercentage(currentScrollPercentage);
+	};
+
+	const horizontalRedLineStyles = {
+		width: `${scrollPercentage}%`,
+	};
+
+	// Save read time, scroll percentage, and other data when navigating away from the article
+	const handleOnBack = async () => {
+		scrollPercentage > 100 ? storeUserData(article, articlesInView, 100) : storeUserData(article, articlesInView, scrollPercentage);
+
+		emitGoBackFromArticle({ clicked_article_id: article.article_id, scroll_percentage: scrollPercentage });
+		navigation.goBack();
+	};	
 
 	if (!article) {
 		return(
 			<Error errorText={'Artiklen blev ikke fundet'} action={ERRORACTIONS.BACK}/>
 		);
+	} else {
+		paragraphs = article.body.split('\n');
+	
+		renderedParagraphs = paragraphs.map((paragraph, index) => {
+			if (paragraph.includes('--------- SPLIT ELEMENT ---------')) {
+				return null; // Skip rendering this paragraph
+			}
+	
+			return (
+				<Text key={index} style={globalStyles.bodyText}>
+					{paragraph}
+					{'\n'} {/* Adding an extra newline character at the end of each paragraph */}
+				</Text>
+			);
+		});
 	}
-
-	const paragraphs = article.body.split('\n');
-
-	const renderedParagraphs = paragraphs.map((paragraph, index) => {
-		if (paragraph.includes('--------- SPLIT ELEMENT ---------')) {
-			return null; // Skip rendering this paragraph
+	
+	scrollParentToTop = () => {
+		if (this.scrollViewRef) {
+		  this.scrollViewRef.scrollTo({ y: 0, animated: true });
 		}
+	};
 
-		return (
-			<Text key={index} style={globalStyles.bodyText}>
-				{paragraph}
-				{'\n'} {/* Adding an extra newline character at the end of each paragraph */}
-			</Text>
-		);
-	});
+	useEffect(() => {
+	}, []);
 
 	return (
-		<SafeAreaView style={styles.container}>
-			<View style={styles.header}>
-				<PlusIndicator isActive={true} />
-				<TouchableOpacity style={styles.headerMenu} onPress={() => navigation.goBack()}>
-					<Ionicons name="arrow-back" size={height * 0.04} color="black" />
-					<Text style={globalStyles.headline}>Artikler</Text>
-				</TouchableOpacity>
-			</View>
-			<ScrollView 
-				style={styles.scrollView}
-				showsVerticalScrollIndicator={false} 
-				showsHorizontalScrollIndicator={false}
-			>
-				<Image source={{ uri: article.image_url }} style={styles.cover} />
-
-				<View style={styles.content}>
-					<Text style={styles.articleTitle}>
-						{ article.title }
-					</Text>
-
-					<View style={styles.authorContainer}>
-						<Text>Af </Text>
-						<Text style={styles.authorName}>
-							{ journalistName }
-						</Text>
-					</View>
-
-                    {renderedParagraphs}
-
+	<>
+		{article && (
+			<SafeAreaView style={styles.container}>
+				<View style={styles.header}>
+					<TouchableOpacity style={styles.headerMenu} onPress={handleOnBack}>
+						<Ionicons name="arrow-back" size={height * 0.04} color="black" />
+						<Text style={globalStyles.headline}>Artikler</Text>
+					</TouchableOpacity>
+					<PlusIndicator isActive={true} />
 				</View>
-			</ScrollView>
-		</SafeAreaView>
+				{scrollPercentage > 0 ? (
+					<View style={[styles.horizontalRedLine, horizontalRedLineStyles]} />
+				) : (
+					<View style={[styles.horizontalRedLine, { width: 0 }]} />
+				)}
+				<ScrollView
+					ref={(ref) => { this.scrollViewRef = ref; }}
+					showsVerticalScrollIndicator={false} 
+					showsHorizontalScrollIndicator={false}
+					onScroll={handleScroll}
+					scrollEventThrottle={16} // Adjust the throttle value as needed
+				>
+					<Image source={{ uri: article.image_url }} style={styles.cover} />
+
+					<View style={styles.content}>
+						<Text style={styles.articleTitle}>
+							{ article.title }
+						</Text>
+
+						<View style={styles.authorContainer}>
+							<Text>Af </Text>
+							<Text style={styles.authorName}>
+								{ journalistName }
+							</Text>
+						</View>
+						{renderedParagraphs}
+					</View>
+					<View style={styles.bottomBox}/>
+					<View style={styles.nextArticles}>
+						<Text style={styles.nextArticlesHeader}>Anbefalet til dig</Text>
+						<CarouselCards
+						articles={articlesInView}
+						scrollParentToTop={this.scrollParentToTop}
+						/>
+					</View>
+				</ScrollView>
+			</SafeAreaView>
+		)}
+	</>
 	);
 }
 
@@ -90,12 +144,10 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	header: {
-		alignItems: 'center',
-		paddingHorizontal: '4%',
-		...layout.flexRow,
+		...layout.centeredRow,
+		justifyContent: 'space-between',
 	},
 	scrollView: {
-		marginTop: '4.5%',
 	},
 	cover: {
 		width: '100%',
@@ -119,7 +171,29 @@ const styles = StyleSheet.create({
 	},
 	headerMenu: {
 		...layout.flexRow,
+		paddingHorizontal: '4%',
 		alignItems: 'center',
 		top: 0,
-	}
+	},
+	horizontalRedLine: {
+		...globalStyles.horizontalRedLine,
+		position: 'relative',
+		left: 0,
+		right: 0,
+		marginTop: '4.5%',
+	},
+	nextArticles: {
+		alignItems: 'center',
+		marginTop: '5%',
+		zIndex: 1000,
+	},
+	nextArticlesHeader: {
+		...globalStyles.headline,
+		alignSelf: 'flex-start',
+		marginBottom: '5%',
+		paddingHorizontal: '4%',
+	},
+	bottomBox: {
+
+	},
 });
