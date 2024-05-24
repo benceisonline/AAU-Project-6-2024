@@ -14,7 +14,7 @@ const storeUserIdInAsyncStorage = async (userId) => {
   try {
     await AsyncStorage.setItem('userId', JSON.stringify(userId));
   } catch (error) {
-    throw new error;
+    throw new Error(error);
   }
 }
 
@@ -39,7 +39,7 @@ export const fetchUserId = async () => {
     const userId = await AsyncStorage.getItem('userId');
     return JSON.parse(userId);
   } catch (error) {
-    throw new error;
+    throw new Error(error);
   }
 }
 
@@ -57,7 +57,7 @@ const storeSessionIdInAsyncStorage = async (sessionId) => {
 	try {
 		await AsyncStorage.setItem('sessionId', JSON.stringify(sessionId));
 	} catch (error) {
-		throw new error;
+		throw new Error(error);
 	}
 };
 
@@ -66,7 +66,7 @@ const fetchSessionId = async () => {
 		const sessionId = JSON.parse(await AsyncStorage.getItem('sessionId'));
 		return sessionId;
 	} catch (error) {
-		throw new error;
+		throw new Error(error);
 	}
 };
 
@@ -145,7 +145,7 @@ const storeBehaviorInAsyncStorage = async (behavior) => {
 	try {
 		await AsyncStorage.setItem('behavior', JSON.stringify(behavior));
 	} catch (error) {
-		throw new error;
+		throw new Error(error);
 	}
 };
 
@@ -154,7 +154,7 @@ export const trackStartReading = async () => {
 		const timestamp = getCurrentTimestamp();
     await AsyncStorage.setItem('startReadTime', JSON.stringify(timestamp));
   } catch (error) {
-    throw new error;
+    throw new Error(error);
   }
 }
 
@@ -168,6 +168,7 @@ export const trackEndReading = async () => {
 		const differenceInMillis = date2.getTime() - date1.getTime();
 		// Convert milliseconds to minutes
 		const totalReadTime = (Math.abs(differenceInMillis / 60000)).toFixed(1);
+
 		const readtime = {
 			start: startReadTime,
 			end: timestamp,
@@ -176,7 +177,7 @@ export const trackEndReading = async () => {
 
 		return readtime;
   } catch (error) {
-    throw new error;
+    throw new Error(error);
   }
 }
 
@@ -195,6 +196,7 @@ const updateUserHistoryData = async (userId, impressionTime, scrollPercentage, r
 			if (article_ids.includes(behavior.article_id)) {
 				return;
 			}
+
 			const newImpressionTimes = [...userHistory.impression_time_fixed, new Date(impressionTime)];
 			const newScrollPercentages = [...userHistory.scroll_percentage_fixed, parseInt(scrollPercentage)];
 			const newReadTimes = [...userHistory.read_time_fixed, parseFloat(readtime)];
@@ -219,7 +221,7 @@ const updateUserHistoryData = async (userId, impressionTime, scrollPercentage, r
 
 		return userHistoryData;
 	} catch (error) {
-		throw new error;
+		throw new Error(error);
 	}
 };
 
@@ -231,12 +233,13 @@ const storeUserHistoryInAsyncStorage = async (history) => {
 	}
 };
 
+
 const fetchUserHistoryData = async () => {
 	try {
 		const userHistoryData = JSON.parse(await AsyncStorage.getItem('history'));
 		return userHistoryData;
 	} catch (error) {
-		throw new error;
+		throw new Error(error);
 	}
 }
 
@@ -255,6 +258,7 @@ const createDataList = (userId, clickedArticle, articlesInView) => {
 		}
 		dataList.push({user_id: userId, item_id: article.article_id, rating: rating, genre: article.category_str})
 	});
+  
 	return dataList;
 }
 
@@ -263,6 +267,7 @@ export const getCurrentTimestamp = () => {
 	const now = new Date();
 	return `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
 };
+
 export const logAsyncStorageContents = async () => {
 	try {
 		const keys = await AsyncStorage.getAllKeys();
