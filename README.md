@@ -5,9 +5,12 @@ You will need Node.js and install dependencies
 Then start the program with
 `npx expo start`
 
+If you make any changes to the babel config file, clear the cache by setting the flag
+`npx expo start --clear`
+
 Install the Expo Go app and scan the QR code to run on your phone :)
 
-Update IP to your local IP address in App.js and AxiosRequest.js
+Remember to update IP to your local IP address in App.js and AxiosRequest.js when local hosting
 
 # Definition of Done
 ## Functionality
